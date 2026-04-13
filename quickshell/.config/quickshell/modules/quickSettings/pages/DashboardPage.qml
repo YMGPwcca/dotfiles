@@ -171,7 +171,7 @@ Item {
                 icon: NetworkService.systemIcon
                 label: "Wi-Fi"
                 subLabel: NetworkService.statusText
-                property string ssid: NetworkService.accessPoints.find(ap => ap.active)?.ssid || "Connected"
+                property string ssid: NetworkService.connectedSsid || "Connected"
                 active: NetworkService.wifiEnabled
                 hasDetails: true
                 onToggled: NetworkService.toggleWifi()

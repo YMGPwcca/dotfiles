@@ -1,0 +1,13 @@
+[Unit]
+Description=Lock Quickshell before sleep
+After=graphical-session.target
+PartOf=graphical-session.target
+
+[Service]
+Type=simple
+Restart=always
+RestartSec=1
+ExecStart=/usr/bin/bash -lc 'dbus-monitor --system "type=\"signal\",interface=\"org.freedesktop.login1.Manager\",member=\"PrepareForSleep\"" | while IFS= read -r line; do if [[ "$line" == *"boolean true"* ]]; then for sigdir in "$XDG_RUNTIME_DIR"/hypr/*; do [[ -d "$sigdir" ]] || continue; HYPRLAND_INSTANCE_SIGNATURE="$(basename "$sigdir")" hyprctl dispatch global quickshell:lock_screen >/dev/null 2>&1 || true; done; loginctl lock-session "${XDG_SESSION_ID:-}" >/dev/null 2>&1 || true; sleep 0.7; fi; done'
+
+[Install]
+WantedBy=default.target

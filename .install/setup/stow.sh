@@ -69,7 +69,7 @@ get_stow_targets() {
             targets+=("$HOME/.config/hypr" "$HOME/.config/uwsm")
             ;;
         "zsh")
-            targets+=("$HOME/.zshrc" "$HOME/.p10k.zsh")
+            targets+=("$HOME/.zshrc" "$HOME/.zprofile" "$HOME/.p10k.zsh")
             ;;
         "tmux")
             targets+=("$HOME/.tmux.conf")

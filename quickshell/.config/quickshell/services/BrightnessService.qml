@@ -261,7 +261,7 @@ Singleton {
         id: ensureHyprsunsetRunning
         command: ["bash", "-c", `
             if ! pgrep -x hyprsunset >/dev/null 2>&1; then
-                hyprsunset &
+                hyprsunset -t 9000 &
                 disown
                 sleep 0.5
             fi
@@ -301,7 +301,7 @@ Singleton {
         command: ["bash", "-c", `
             pkill -x hyprsunset 2>/dev/null
             sleep 0.2
-            hyprsunset &
+            hyprsunset -t 9000 &
             disown
             sleep 0.5
             hyprctl hyprsunset temperature ` + root.nightLightTemperature + `
@@ -310,7 +310,7 @@ Singleton {
 
     Process {
         id: disableNightLightProc
-        command: ["hyprctl", "hyprsunset", "identity"]
+        command: ["hyprctl", "hyprsunset", "temperature", "9000"]
         onExited: (exitCode, exitStatus) => {
             console.log("[Brightness] Night light disabled");
         }

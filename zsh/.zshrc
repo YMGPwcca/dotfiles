@@ -82,3 +82,10 @@ all-update() {
 }
 
 export PATH=$PATH:/home/caio/.spicetify
+
+# bun completions
+[ -s "/home/pwcca/.bun/_bun" ] && source "/home/pwcca/.bun/_bun"
+
+# bun
+export BUN_INSTALL="$HOME/.bun"
+export PATH="$BUN_INSTALL/bin:$PATH"

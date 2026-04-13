@@ -40,9 +40,11 @@ Singleton {
                 rebootProc.running = true;
                 break;
             case "suspend":
+                IdleService.lock();
                 suspendProc.running = true;
                 break;
             case "hibernate":
+                IdleService.lock();
                 hibernateProc.running = true;
                 break;
             case "lock":
@@ -80,12 +82,12 @@ Singleton {
 
     Process {
         id: suspendProc
-        command: ["systemctl", "suspend"]
+        command: ["bash", "-c", "sleep 0.6; systemctl suspend"]
     }
 
     Process {
         id: hibernateProc
-        command: ["systemctl", "hibernate"]
+        command: ["bash", "-c", "sleep 0.6; systemctl hibernate"]
     }
 
     Process {

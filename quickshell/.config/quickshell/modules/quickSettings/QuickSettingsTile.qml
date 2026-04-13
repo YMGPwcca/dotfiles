@@ -15,6 +15,7 @@ Rectangle {
 
     property bool active: false
     property bool hasDetails: false
+    readonly property bool detailsHintHover: root.hasDetails && bodyMouse.containsMouse
 
     // --- Signals ---
     signal toggled
@@ -27,7 +28,7 @@ Rectangle {
 
     // Colors and Animation
     color: {
-        if (mainMouse.containsMouse || (detailsButton.containsMouse && hasDetails))
+        if (hoverArea.containsMouse || (detailsButton.containsMouse && hasDetails))
             return Config.surface2Color;
         return Config.surface1Color;
     }
@@ -39,20 +40,19 @@ Rectangle {
     }
 
     // Scale effect on click
-    scale: mainMouse.pressed || detailsButton.pressed ? 0.98 : 1.0
+    scale: iconMouse.pressed || bodyMouse.pressed || detailsButton.pressed ? 0.98 : 1.0
     Behavior on scale {
         NumberAnimation {
             duration: Config.animDurationShort
         }
     }
 
-    // Main MouseArea (Toggle)
+    // Hover tracker for card feedback and details button visibility
     MouseArea {
-        id: mainMouse
+        id: hoverArea
         anchors.fill: parent
         hoverEnabled: true
-        cursorShape: Qt.PointingHandCursor
-        onClicked: root.toggled()
+        acceptedButtons: Qt.NoButton
     }
 
     RowLayout {
@@ -73,6 +73,7 @@ Rectangle {
 
                 // Icon
                 Rectangle {
+                    id: iconButton
                     width: 36
                     height: 36
                     radius: Config.radiusLarge
@@ -85,33 +86,63 @@ Rectangle {
                         font.pixelSize: Config.fontSizeIcon
                         color: root.active ? Config.textReverseColor : Config.textColor
                     }
+
+                    MouseArea {
+                        id: iconMouse
+                        anchors.fill: parent
+                        hoverEnabled: true
+                        cursorShape: Qt.PointingHandCursor
+                        onClicked: root.toggled()
+                    }
                 }
 
                 // Text (Title and Subtitle)
-                ColumnLayout {
+                Item {
                     Layout.fillWidth: true
-                    spacing: 0
+                    Layout.fillHeight: true
 
-                    Text {
-                        text: root.label
-                        font.family: Config.font
-                        font.bold: true
-                        font.pixelSize: Config.fontSizeNormal
-                        color: Config.textColor
-                        elide: Text.ElideRight
-                        Layout.fillWidth: true
+                    ColumnLayout {
+                        anchors.left: parent.left
+                        anchors.right: parent.right
+                        anchors.verticalCenter: parent.verticalCenter
+                        spacing: -2
+
+                        Text {
+                            text: root.label
+                            font.family: Config.font
+                            font.bold: true
+                            font.pixelSize: Config.fontSizeNormal
+                            lineHeight: 1.0
+                            color: Config.textColor
+                            elide: Text.ElideRight
+                            Layout.fillWidth: true
+                        }
+
+                        // Only show sublabel if there is text
+                        Text {
+                            visible: root.subLabel !== ""
+                            text: root.subLabel
+                            font.family: Config.font
+                            font.pixelSize: Config.fontSizeSmall
+                            lineHeight: 1.0
+                            // Slight transparency on subtext
+                            color: Config.subtextColor
+                            elide: Text.ElideRight
+                            Layout.fillWidth: true
+                        }
                     }
 
-                    // Only show sublabel if there is text
-                    Text {
-                        visible: root.subLabel !== ""
-                        text: root.subLabel
-                        font.family: Config.font
-                        font.pixelSize: Config.fontSizeSmall
-                        // Slight transparency on subtext
-                        color: Config.subtextColor
-                        elide: Text.ElideRight
-                        Layout.fillWidth: true
+                    MouseArea {
+                        id: bodyMouse
+                        anchors.fill: parent
+                        hoverEnabled: true
+                        cursorShape: Qt.PointingHandCursor
+                        onClicked: {
+                            if (root.hasDetails)
+                                root.openDetails();
+                            else
+                                root.toggled();
+                        }
                     }
                 }
             }
@@ -120,8 +151,8 @@ Rectangle {
         // DETAILS BUTTON (Arrow/Gear)
         ActionButton {
             id: detailsButton
-            visible: root.hasDetails && (mainMouse.containsMouse || hovered)
-            icon: ""
+            visible: root.hasDetails && (root.detailsHintHover || hovered)
+            icon: ""
             opacity: visible ? 1 : 0
             baseColor: Config.surface2Color
 

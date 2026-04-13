@@ -12,20 +12,59 @@ Singleton {
     property var savedSsids: []
     property bool wifiEnabled: true
     property string wifiInterface: ""
+    property string connectedSsid: ""
+    property int connectedSignal: 0
     property string connectingSsid: ""
+    property double connectingStartedAt: 0
+    property int connectingMinDurationMs: 6000
+    property int connectingMaxDurationMs: 30000
+    property double lastAwakeTick: Date.now()
     readonly property bool scanning: rescanProc.running
     readonly property string systemIcon: {
         if (!wifiEnabled)
             return "󰤮";
-        const activeNetwork = accessPoints.find(ap => ap.active === true);
-        if (activeNetwork)
-            return getWifiIcon(activeNetwork.signal);
+        if (connectedSsid !== "")
+            return getWifiIcon(connectedSignal, true);
         return "󰤫";
     }
 
-    // --- FUNCTIONS ---
+    function splitNmcli(line, delimiter, maxParts) {
+        var parts = [];
+        var current = "";
+        var escaped = false;
 
-    function getWifiIcon(signal) {
+        for (let i = 0; i < line.length; i++) {
+            const ch = line[i];
+
+            if (escaped) {
+                current += ch;
+                escaped = false;
+                continue;
+            }
+
+            if (ch === "\\") {
+                escaped = true;
+                continue;
+            }
+
+            if (ch === delimiter && (maxParts <= 0 || parts.length < maxParts - 1)) {
+                parts.push(current);
+                current = "";
+                continue;
+            }
+
+            current += ch;
+        }
+
+        parts.push(current);
+        return parts;
+    }
+    function getWifiIcon(signal, connected) {
+        const isConnected = connected === undefined ? signal > 0 : connected;
+
+        if (!isConnected)
+            return "󰤫";
+
         if (signal > 80)
             return "󰤨";
         if (signal > 60)
@@ -34,7 +73,7 @@ Singleton {
             return "󰤢";
         if (signal > 20)
             return "󰤟";
-        return "󰤫";
+        return "󰤟";
     }
 
     // Status text
@@ -42,11 +81,8 @@ Singleton {
         if (!wifiEnabled)
             return "Off";
 
-        const activeNetwork = accessPoints.find(ap => ap.active === true);
-
-        // If there is an active network, return the SSID
-        if (activeNetwork)
-            return activeNetwork.ssid || "Hidden Network";
+        if (connectedSsid !== "")
+            return connectedSsid;
 
         // If enabled but not connected
         return "On";
@@ -66,6 +102,7 @@ Singleton {
     function disconnect() {
         if (wifiInterface !== "") {
             console.log("Disconnecting interface: " + wifiInterface);
+            root.connectingSsid = "";
             disconnectProc.command = ["nmcli", "dev", "disconnect", wifiInterface];
             disconnectProc.running = true;
         }
@@ -74,6 +111,7 @@ Singleton {
     function connect(ssid, password) {
         console.log("Attempting to connect to:", ssid);
         root.connectingSsid = ssid; // Mark which one we are trying
+        root.connectingStartedAt = Date.now();
 
         if (password && password.length > 0) {
             connectProc.command = ["nmcli", "dev", "wifi", "connect", ssid, "password", password];
@@ -82,6 +120,18 @@ Singleton {
             connectProc.command = ["nmcli", "dev", "wifi", "connect", ssid];
         }
         connectProc.running = true;
+    }
+
+    function finishConnectingIfReady() {
+        if (root.connectingSsid === "")
+            return;
+
+        const elapsed = Date.now() - root.connectingStartedAt;
+        const minDurationReached = elapsed >= root.connectingMinDurationMs;
+        const targetConnected = root.connectedSsid !== "" && root.connectedSsid === root.connectingSsid;
+
+        if (targetConnected && minDurationReached)
+            root.connectingSsid = "";
     }
 
     function forget(ssid) {
@@ -119,14 +169,47 @@ Singleton {
                 if (root.connectingSsid !== "") {
                     root.cleanUpBadConnection(root.connectingSsid);
                 }
+                root.connectingSsid = "";
             } else {
                 console.log("Connected successfully!");
             }
 
             // Reset state and update lists
-            root.connectingSsid = "";
             getSavedProc.running = true;
+            currentConnectionProc.running = true;
             getNetworksProc.running = true;
+        }
+    }
+
+    Timer {
+        id: connectGuardTimer
+        interval: 500
+        repeat: true
+        running: root.connectingSsid !== ""
+        onTriggered: {
+            root.finishConnectingIfReady();
+            if (Date.now() - root.connectingStartedAt >= root.connectingMaxDurationMs)
+                root.connectingSsid = "";
+        }
+    }
+
+    // Detect long timer gaps (typically suspend/resume) and force a fresh scan.
+    Timer {
+        id: resumeWatchdogTimer
+        interval: 5000
+        repeat: true
+        running: true
+        onTriggered: {
+            const now = Date.now();
+            const elapsed = now - root.lastAwakeTick;
+            root.lastAwakeTick = now;
+
+            if (elapsed > 15000 && root.wifiEnabled) {
+                currentConnectionProc.running = true;
+                getSavedProc.running = true;
+                if (!rescanProc.running)
+                    rescanProc.running = true;
+            }
         }
     }
 
@@ -157,8 +240,48 @@ Singleton {
             onRead: data => {
                 root.wifiEnabled = (data.trim() === "enabled");
                 if (root.wifiEnabled)
+                    currentConnectionProc.running = true;
+                if (root.wifiEnabled)
                     getSavedProc.running = true;
+                else {
+                    root.connectedSsid = "";
+                    root.connectedSignal = 0;
+                }
                 getNetworksProc.running = true;
+            }
+        }
+    }
+
+    // Current Connection State
+    Process {
+        id: currentConnectionProc
+        command: ["nmcli", "-t", "-f", "DEVICE,TYPE,STATE,CONNECTION", "dev", "status"]
+        running: true
+        stdout: StdioCollector {
+            onStreamFinished: {
+                const lines = text.trim().split("\n");
+                let foundConnection = "";
+                const previousSsid = root.connectedSsid;
+
+                lines.forEach(line => {
+                    const parts = splitNmcli(line, ":", 4);
+                    if (parts.length < 4)
+                        return;
+
+                    if (parts[1] === "wifi" && parts[2] === "connected") {
+                        foundConnection = parts[3] !== "--" ? parts[3] : "";
+                    }
+                });
+                if (foundConnection !== "") {
+                    root.connectedSsid = foundConnection;
+                    if (foundConnection !== previousSsid)
+                        root.connectedSignal = 0;
+                } else {
+                    root.connectedSsid = "";
+                    root.connectedSignal = 0;
+                }
+
+                root.finishConnectingIfReady();
             }
         }
     }
@@ -166,20 +289,29 @@ Singleton {
     // Toggle On/Off
     Process {
         id: toggleWifiProc
-        onExited: statusProc.running = true
+        onExited: {
+            statusProc.running = true;
+            currentConnectionProc.running = true;
+        }
     }
 
     // Rescan (Refresh)
     Process {
         id: rescanProc
         command: ["nmcli", "dev", "wifi", "list", "--rescan", "yes"]
-        onExited: getNetworksProc.running = true
+        onExited: {
+            currentConnectionProc.running = true;
+            getNetworksProc.running = true;
+        }
     }
 
     // Disconnect
     Process {
         id: disconnectProc
-        onExited: getNetworksProc.running = true
+        onExited: {
+            currentConnectionProc.running = true;
+            getNetworksProc.running = true;
+        }
     }
 
     // Forget Network
@@ -187,6 +319,7 @@ Singleton {
         id: forgetProc
         // The command is defined dynamically before running
         onExited: {
+            currentConnectionProc.running = true;
             getSavedProc.running = true;
             getNetworksProc.running = true;
         }
@@ -198,6 +331,7 @@ Singleton {
         running: root.wifiEnabled
         repeat: true
         onTriggered: {
+            currentConnectionProc.running = true;
             getSavedProc.running = true;
             getNetworksProc.running = true;
         }
@@ -231,11 +365,13 @@ Singleton {
                 const lines = text.trim().split("\n");
                 var tempParams = [];
                 const seen = new Set();
+                let hasConnectedEntry = false;
+                const savedSsids = Array.isArray(root.savedSsids) ? root.savedSsids : [];
 
                 lines.forEach(line => {
                     if (line.length < 5)
                         return;
-                    const parts = line.split(":");
+                    const parts = splitNmcli(line, ":", 7);
                     if (parts.length < 7)
                         return;
 
@@ -253,12 +389,19 @@ Singleton {
                         return; // Avoid visual duplicates
                     seen.add(ssid);
 
-                    const isSaved = root.savedSsids.includes(ssid);
+                    const isSaved = savedSsids.includes(ssid);
+                    const isActive = inUse || ssid === root.connectedSsid;
+
+                    if (isActive) {
+                        hasConnectedEntry = true;
+                        root.connectedSsid = ssid;
+                        root.connectedSignal = signal;
+                    }
 
                     tempParams.push({
                         ssid: ssid,
                         signal: signal,
-                        active: inUse,
+                        active: isActive,
                         secure: security.length > 0,
                         securityType: security || "Open",
                         saved: isSaved,
@@ -267,6 +410,22 @@ Singleton {
                         rate: rate
                     });
                 });
+
+                if (root.connectedSsid !== "" && !hasConnectedEntry) {
+                    tempParams.unshift({
+                        ssid: root.connectedSsid,
+                        signal: root.connectedSignal,
+                        active: true,
+                        secure: true,
+                        securityType: "Unknown",
+                        saved: savedSsids.includes(root.connectedSsid),
+                        bssid: "",
+                        channel: "",
+                        rate: ""
+                    });
+                }
+
+                root.finishConnectingIfReady();
 
                 // Sort: Connected > Saved > Signal
                 tempParams.sort((a, b) => {

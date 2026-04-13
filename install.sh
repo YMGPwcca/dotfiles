@@ -383,6 +383,39 @@ setup_migrations() {
     log_info "Marked $count migrations as done (fresh install)"
 }
 
+setup_suspend_lock() {
+    log_header "Configuring Suspend Lock"
+
+    local ROOT_SETUP_SCRIPT="$HOME/.local/scripts/System/setup-suspend-lock.sh"
+    local USER_ENABLE_SCRIPT="$HOME/.local/scripts/System/enable-user-suspend-lock.sh"
+
+    if [[ ! -x "$ROOT_SETUP_SCRIPT" ]]; then
+        log_warn "Suspend-lock root setup script not found/executable: $ROOT_SETUP_SCRIPT"
+        return 0
+    fi
+
+    if [[ ! -x "$USER_ENABLE_SCRIPT" ]]; then
+        log_warn "Suspend-lock user enable script not found/executable: $USER_ENABLE_SCRIPT"
+        return 0
+    fi
+
+    log_step "Installing system suspend-lock hook (root)..."
+    if ! sudo "$ROOT_SETUP_SCRIPT"; then
+        log_warn "Failed to install system suspend-lock hook. You can run manually later:"
+        log_warn "  sudo $ROOT_SETUP_SCRIPT"
+        return 0
+    fi
+
+    log_step "Enabling user suspend-lock service..."
+    if ! "$USER_ENABLE_SCRIPT"; then
+        log_warn "Could not enable user suspend-lock service in this session."
+        log_warn "Run after login: $USER_ENABLE_SCRIPT"
+        return 0
+    fi
+
+    log_info "Suspend lock configured successfully."
+}
+
 setup_state_aur_helper() {
     local STATE_FILE="$HOME/.config/quickshell/state.json"
 
@@ -458,6 +491,13 @@ full_install() {
 
     # Mark all existing migrations as done (fresh install)
     setup_migrations
+
+    # Configure lock-before-suspend paths (power button / lid close / suspend)
+    if [[ " ${CATEGORIES[*]} " =~ " core " ]] && [[ " ${CATEGORIES[*]} " =~ " quickshell " ]]; then
+        setup_suspend_lock
+    else
+        log_info "Skipping suspend lock setup (requires both 'core' and 'quickshell' categories)."
+    fi
 }
 
 # =============================================================================

@@ -80,6 +80,15 @@ NVIDIA UWSM templates are in `.data/hyprland/uwsm/`:
 - `global_hardware.sh` - Global Wayland variables
 - `hyprland_hardware.sh` - Hyprland-specific settings
 
+## Suspend Lock Setup
+
+During full installs, if both `core` and `quickshell` categories are selected, the installer also configures lock-before-suspend behavior automatically:
+
+- Installs system sleep hook and logind lid/power suspend policy
+- Enables user service that triggers QuickShell lock before sleep
+
+This uses scripts in `~/.local/scripts/System/` and may require a login refresh if user systemd is not available at install time.
+
 ## Stow Directories
 
 The `stow.sh` script creates symlinks for:
