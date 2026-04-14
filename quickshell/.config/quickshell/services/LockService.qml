@@ -95,4 +95,15 @@ Singleton {
         failMessage = "";
         pam.start();
     }
+
+    function unlockWithBiometric() {
+        if (!locked)
+            return;
+        console.log("[Lock] Fingerprint authentication successful");
+        authenticating = false;
+        _pendingPassword = "";
+        failed = false;
+        failMessage = "";
+        authSucceeded();
+    }
 }
