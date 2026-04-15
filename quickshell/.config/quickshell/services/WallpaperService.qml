@@ -40,6 +40,7 @@ Singleton {
     readonly property string wallpaperDir: Quickshell.env("HOME") + "/.local/wallpapers"
     readonly property string themeWallpaperDir: wallpaperDir + "/themes"
     readonly property string themesConfigDir: Quickshell.env("HOME") + "/.local/themes"
+    readonly property string portalFilePickerScriptPath: Qt.resolvedUrl("../scripts/portal-file-picker.py").toString().replace("file://", "")
     readonly property int selectedCount: selectedWallpapers.length
 
     // Active wallpaper paths per theme (for the Themes overview)
@@ -351,8 +352,22 @@ Singleton {
         confirmDelete = false;
     }
 
+    function importWallpaperPaths(paths) {
+        if (!paths || paths.length === 0 || importWallpapersProc.running)
+            return;
+
+        console.log("[Wallpaper] Importing paths:", JSON.stringify(paths));
+        importWallpapersProc.command = [
+            "bash", "-c", "dest=\"$1\"; mkdir -p \"$dest\" && shift && for file in \"$@\"; do [ -f \"$file\" ] || continue; cp -- \"$file\" \"$dest\"/; done",
+            "bash", root.wallpaperDir, ...paths
+        ];
+        importWallpapersProc.running = true;
+    }
+
     // Add
     function addWallpapers() {
+        if (addWallpapersProc.running)
+            return;
         hide();
         addWallpapersProc.running = true;
     }
@@ -441,27 +456,55 @@ Singleton {
 
     Process {
         id: addWallpapersProc
-        command: ["bash", "-c", `
-            files=$(kdialog --multiple --getopenfilename ~ "Image Files (*.png *.jpg *.jpeg *.webp *.gif)")
-            if [ -n "$files" ]; then
-                mkdir -p "${root.wallpaperDir}"
-                echo "$files" | while read -r file; do
-                    if [ -f "$file" ]; then
-                        cp "$file" "${root.wallpaperDir}/"
-                    fi
-                done
-                echo "done"
-            else
-                echo "cancelled"
-            fi
-        `]
+        property var _selectedPaths: []
+        command: ["python3", root.portalFilePickerScriptPath]
         stdout: SplitParser {
             onRead: data => {
-                const result = data.trim();
-                if (result === "done" || result === "cancelled") {
-                    root.refreshWallpapers();
-                    root.show();
+                const lines = data.split("\n");
+                for (let i = 0; i < lines.length; i++) {
+                    const line = lines[i].trim();
+                    if (line)
+                        addWallpapersProc._selectedPaths.push(line);
                 }
+            }
+        }
+        stderr: SplitParser {
+            onRead: data => {
+                const line = data.trim();
+                if (line)
+                    console.error("[Wallpaper] Portal picker error:", line);
+            }
+        }
+        onStarted: addWallpapersProc._selectedPaths = []
+        onExited: exitCode => {
+            if (exitCode === 0) {
+                console.log("[Wallpaper] Portal returned paths:", JSON.stringify(addWallpapersProc._selectedPaths));
+                root.importWallpaperPaths(addWallpapersProc._selectedPaths);
+            } else if (exitCode === 1) {
+                root.show();
+            } else if (exitCode !== 1) {
+                console.error("[Wallpaper] Add wallpapers exited with code", exitCode);
+                root.show();
+            }
+        }
+    }
+
+    Process {
+        id: importWallpapersProc
+        stderr: SplitParser {
+            onRead: data => {
+                const line = data.trim();
+                if (line)
+                    console.error("[Wallpaper] Import wallpapers error:", line);
+            }
+        }
+        onExited: exitCode => {
+            if (exitCode === 0) {
+                root.refreshWallpapers();
+                root.show();
+            } else {
+                console.error("[Wallpaper] Import wallpapers exited with code", exitCode);
+                root.show();
             }
         }
     }
@@ -503,4 +546,5 @@ Singleton {
     Process {
         id: deleteWallpaperProc
     }
+
 }
