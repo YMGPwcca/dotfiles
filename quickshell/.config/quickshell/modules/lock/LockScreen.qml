@@ -44,109 +44,19 @@ WlSessionLock {
         }
 
         Component.onDestruction: {
-            fingerprintRetryTimer.stop();
-            fingerprintStartupTimer.stop();
-            if (fingerprintProc.running)
-                fingerprintProc.running = false;
-        }
-
-        function startFingerprintVerify() {
-            if (!root.locked || LockService.authenticating || !root.fingerprintAvailable || root.authMode !== "fingerprint")
-                return;
-            
-            // Stop existing process if running
-            if (fingerprintProc.running)
-                return;
-            
-            root.fingerprintActive = true;
-            root.fingerprintRetryCount++;
-            root.fingerprintHint = "Scanning... (attempt #" + root.fingerprintRetryCount + ")";
-            root.fingerprintState = "scanning";
-            fingerprintProc.running = true;
-        }
-
-        Process {
-            id: fingerprintProc
-            command: ["fprintd-verify", Quickshell.env("USER")]
-            
-            onRunningChanged: {}
-
-            stdout: SplitParser {
-                onRead: data => {
-                    const line = data.trim();
-                    if (line === "")
-                        return;
-
-                    if (line.indexOf("verify-match") !== -1) {
-                        root.fingerprintHint = "✓ Fingerprint accepted";
-                        root.fingerprintActive = false;
-                        root.fingerprintState = "success";
-                        fingerprintRetryTimer.stop();
-                        if (fingerprintProc.running)
-                            fingerprintProc.running = false;
-                        LockService.unlockWithBiometric();
-                        return;
-                    }
-
-                    if (line.indexOf("verify-no-match") !== -1) {
-                        root.fingerprintHint = "✗ No match. Try again (attempt #" + (root.fingerprintRetryCount + 1) + ")";
-                        root.fingerprintState = "error";
-                    }
-                    
-                    // Capture other status messages from fprintd-verify
-                    if (line.indexOf("finger on") !== -1 || line.indexOf("Remove") !== -1) {
-                        root.fingerprintHint = line;
-                    }
-                }
-            }
-
-            stderr: SplitParser {
-                onRead: data => {
-                    const line = data.trim();
-                    if (line === "")
-                        return;
-
-                    if (line.indexOf("No devices available") !== -1 || line.indexOf("not available") !== -1 || line.indexOf("command not found") !== -1) {
-                        root.fingerprintAvailable = false;
-                        root.fingerprintActive = false;
-                        root.fingerprintHint = "Fingerprint unavailable, use password";
-                        root.fingerprintState = "unavailable";
-                        fingerprintRetryTimer.stop();
-                        if (root.authMode === "fingerprint")
-                            root.authMode = "password";
-                    }
-                }
-            }
-
-            onExited: code => {
-                root.fingerprintActive = false;
-                if (root.fingerprintState !== "success" && root.fingerprintState !== "unavailable" && root.fingerprintState !== "error")
-                    root.fingerprintState = "idle";
-
-                // Only restart timer if still locked, fingerprint available, and not authenticating
-                if (root.locked && root.fingerprintAvailable && !LockService.authenticating && root.authMode === "fingerprint") {
-                    fingerprintRetryTimer.start();
-                }
-            }
         }
 
         Timer {
-            id: fingerprintStartupTimer
-            interval: 300
+            id: fallbackTimer
+            interval: 2500
             repeat: false
             onTriggered: {
-                startFingerprintVerify();
+                if (root.authMode === "fingerprint")
+                    authModeToggle.setMode("password");
             }
         }
 
-        Timer {
-            id: fingerprintRetryTimer
-            interval: 1200
-            repeat: false
-            onTriggered: {
-                startFingerprintVerify();
-            }
-        }
+        // PAM integration is handled purely by LockService now
 
 
         // Capture clicks to refocus the hidden password input
@@ -211,15 +121,13 @@ WlSessionLock {
                         return;
                     root.authMode = mode;
                     if (mode === "password") {
-                        fingerprintRetryTimer.stop();
-                        fingerprintStartupTimer.stop();
-                        if (fingerprintProc.running)
-                            fingerprintProc.running = false;
                         root.fingerprintActive = false;
                         root.fingerprintState = "idle";
                         passwordInput.forceActiveFocus();
                     } else if (mode === "fingerprint" && root.fingerprintAvailable) {
-                        fingerprintStartupTimer.restart();
+                        root.fingerprintActive = true;
+                        root.fingerprintState = "scanning";
+                        passwordInput.forceActiveFocus();
                     }
                 }
 
@@ -429,8 +337,8 @@ WlSessionLock {
             Text {
                 anchors.horizontalCenter: parent.horizontalCenter
                 visible: root.authMode === "fingerprint" && !LockService.failed && root.fingerprintAvailable
-                text: root.fingerprintHint
-                color: root.fingerprintActive ? Config.accentColor : Config.subtextColor
+                text: LockService.pamMessage !== "" ? LockService.pamMessage : root.fingerprintHint
+                color: LockService.pamMessageIsError ? Config.errorColor : Config.subtextColor
                 font.family: Config.font
                 font.pixelSize: Config.fontSizeSmall
             }
@@ -466,8 +374,6 @@ WlSessionLock {
                 if (root.authMode !== "password")
                     return;
                 if (!LockService.authenticating && text.length > 0) {
-                    if (fingerprintProc.running)
-                        fingerprintProc.running = false;
                     LockService.tryUnlock(text);
                 }
             }
@@ -490,8 +396,22 @@ WlSessionLock {
                 if (LockService.failed) {
                     shakeAnim.start();
                     passwordInput.clear();
-                    if (root.fingerprintAvailable)
-                        fingerprintRetryTimer.restart();
+                    root.fingerprintState = "error";
+                }
+            }
+
+            function onPamMessageChanged() {
+                const msg = LockService.pamMessage.toLowerCase();
+                if (msg.indexOf("failed to match fingerprint") !== -1) {
+                    root.fingerprintState = "error";
+                } else if (msg.indexOf("place your finger") !== -1 || msg.indexOf("swipe") !== -1) {
+                    root.fingerprintState = "scanning";
+                }
+            }
+
+            function onPasswordRequestedChanged() {
+                if (LockService.passwordRequested && root.authMode === "fingerprint") {
+                    fallbackTimer.restart();
                 }
             }
         }

@@ -16,6 +16,9 @@ Singleton {
     property bool authenticating: false
     property bool failed: false
     property string failMessage: ""
+    property string pamMessage: ""
+    property bool pamMessageIsError: false
+    property bool passwordRequested: false
 
     signal authSucceeded
 
@@ -31,8 +34,19 @@ Singleton {
         user: Quickshell.env("USER")
 
         onResponseRequiredChanged: {
-            if (responseRequired)
+            root.passwordRequested = pam.responseRequired;
+            if (pam.responseRequired && root._pendingPassword !== "") {
                 pam.respond(root._pendingPassword);
+                root._pendingPassword = "";
+            }
+        }
+
+        onPamMessage: {
+            const cleanMsg = pam.message.trim();
+            if (cleanMsg !== "" && !pam.responseRequired) {
+                root.pamMessage = cleanMsg;
+                root.pamMessageIsError = pam.messageIsError;
+            }
         }
 
         onCompleted: result => {
@@ -43,11 +57,16 @@ Singleton {
                 console.log("[Lock] Authentication successful");
                 root.failed = false;
                 root.failMessage = "";
+                root.pamMessage = "";
                 root.authSucceeded();
             } else {
                 console.log("[Lock] Authentication failed:", PamResult.toString(result));
                 root.failed = true;
                 root.failMessage = "Authentication failed";
+                // Restart PAM for prompt retry if still locked
+                if (root.locked) {
+                    pam.start();
+                }
             }
         }
 
@@ -57,6 +76,9 @@ Singleton {
             console.log("[Lock] PAM error:", PamError.toString(error));
             root.failed = true;
             root.failMessage = "Authentication error";
+            if (root.locked) {
+                pam.start();
+            }
         }
     }
 
@@ -70,8 +92,10 @@ Singleton {
             locked = true;
             failed = false;
             failMessage = "";
+            pamMessage = "";
             authenticating = false;
             _pendingPassword = "";
+            pam.start();
         }
     }
 
@@ -86,24 +110,17 @@ Singleton {
     }
 
     function tryUnlock(password: string) {
-        if (authenticating)
-            return;
-        console.log("[Lock] Attempting authentication");
-        _pendingPassword = password;
-        authenticating = true;
-        failed = false;
-        failMessage = "";
-        pam.start();
-    }
-
-    function unlockWithBiometric() {
         if (!locked)
             return;
-        console.log("[Lock] Fingerprint authentication successful");
-        authenticating = false;
-        _pendingPassword = "";
+        console.log("[Lock] Submitting password to PAM");
+        _pendingPassword = password;
+        if (pam.responseRequired) {
+            pam.respond(password);
+            _pendingPassword = "";
+        } else if (!pam.active) {
+            pam.start();
+        }
         failed = false;
         failMessage = "";
-        authSucceeded();
     }
 }
