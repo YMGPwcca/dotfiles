@@ -15,7 +15,7 @@ Item {
     readonly property int activeWidth: 30
     readonly property int activeHeight: 18
     readonly property int itemSpacing: 4
-    readonly property int visibleCount: 9
+    readonly property int visibleCount: 5
     readonly property int totalWorkspaces: 99
 
     // --- Monitor Logic ---

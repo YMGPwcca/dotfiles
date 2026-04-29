@@ -87,7 +87,6 @@ Scope {
 
                     CalendarButton {}
                     SystemMonitorButton {}
-                    ActiveWindow {}
                 }
 
                 // --- CENTER ---

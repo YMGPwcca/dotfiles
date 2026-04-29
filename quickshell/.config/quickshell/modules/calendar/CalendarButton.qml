@@ -14,7 +14,7 @@ BarButton {
     Text {
         id: clockText
         anchors.centerIn: parent
-        text: TimeService.format("hh:mm - ddd, dd MMM")
+        text: TimeService.format("hh:mm - dd/MM")
         font.family: Config.font
         font.pixelSize: Config.fontSizeNormal
         font.bold: true
