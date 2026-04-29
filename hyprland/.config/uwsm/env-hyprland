@@ -6,11 +6,8 @@
 # CURSORS / THEMES
 # Sets cursor theme and size for both XWayland and native Wayland
 # ------------------------------------------------------------------------------
-export XCURSOR_THEME=Bibata-Modern-Classic
-export XCURSOR_SIZE=24
-
-export HYPRCURSOR_THEME=Bibata-Modern-Classic
-export HYPRCURSOR_SIZE=24
+export XCURSOR_THEME=AgnesTachyonCursor
+export XCURSOR_SIZE=32
 
 # ------------------------------------------------------------------------------
 # AQUAMARINE / RENDERING (Hyprland > 0.40)
