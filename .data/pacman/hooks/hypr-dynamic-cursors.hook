@@ -1,0 +1,16 @@
+[Trigger]
+Operation = Install
+Operation = Upgrade
+Type = Package
+Target = hyprland
+Target = hyprutils
+Target = hyprgraphics
+Target = hyprcursor
+Target = hyprlang
+Target = aquamarine
+
+[Action]
+Description = Rebuilding hypr-dynamic-cursors for the current Hyprland ABI
+When = PostTransaction
+Exec = /usr/bin/runuser -u pwcca -- /home/pwcca/.local/bin/rebuild-hypr-dynamic-cursors
+NeedsTargets
