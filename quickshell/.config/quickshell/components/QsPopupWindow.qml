@@ -109,10 +109,10 @@ PanelWindow {
             height: Math.min(root.popupMaxHeight, root.contentImplicitHeight + 32)
             anchors.horizontalCenter: parent.horizontalCenter
             anchors.top: parent.top
-            color: Config.backgroundTransparentColor
+            color: Qt.alpha(Config.backgroundColor, Math.min(Config.backgroundOpacity, 0.5))
             radius: Config.radiusLarge
             border.width: 1.0
-            border.color: Config.surface2Color
+            border.color: Qt.alpha(Config.textColor, 0.18)
             clip: true
 
             transformOrigin: root.anchorSide === "left" ? Item.TopLeft : Item.TopRight
@@ -147,6 +147,28 @@ PanelWindow {
             // just to capture the click and prevent it from closing
             MouseArea {
                 anchors.fill: parent
+            }
+
+            Rectangle {
+                anchors {
+                    left: parent.left
+                    right: parent.right
+                    top: parent.top
+                    margins: 1
+                }
+                height: 1
+                color: Qt.alpha(Config.textColor, 0.22)
+            }
+
+            Rectangle {
+                anchors {
+                    left: parent.left
+                    right: parent.right
+                    bottom: parent.bottom
+                    margins: 1
+                }
+                height: 1
+                color: Qt.alpha(Config.backgroundColor, 0.35)
             }
 
             Item {

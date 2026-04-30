@@ -28,10 +28,14 @@ Rectangle {
 
     // Colors and Animation
     color: {
+        if (root.active)
+            return Qt.alpha(Config.accentColor, hoverArea.containsMouse ? 0.32 : 0.24);
         if (hoverArea.containsMouse || (detailsButton.containsMouse && hasDetails))
-            return Config.surface2Color;
-        return Config.surface1Color;
+            return Qt.alpha(Config.surface2Color, 0.50);
+        return Qt.alpha(Config.surface1Color, 0.34);
     }
+    border.width: 1
+    border.color: root.active ? Qt.alpha(Config.accentColor, 0.40) : Qt.alpha(Config.textColor, hoverArea.containsMouse ? 0.16 : 0.09)
 
     Behavior on color {
         ColorAnimation {
@@ -53,6 +57,18 @@ Rectangle {
         anchors.fill: parent
         hoverEnabled: true
         acceptedButtons: Qt.NoButton
+    }
+
+    Rectangle {
+        anchors.left: parent.left
+        anchors.right: parent.right
+        anchors.top: parent.top
+        anchors.leftMargin: 1
+        anchors.rightMargin: 1
+        anchors.topMargin: 1
+        height: 1
+        radius: Config.radiusLarge
+        color: Qt.alpha(Config.textColor, 0.12)
     }
 
     RowLayout {
@@ -77,7 +93,9 @@ Rectangle {
                     width: 36
                     height: 36
                     radius: Config.radiusLarge
-                    color: root.active ? Config.accentColor : Config.surface3Color
+                    color: root.active ? Config.accentColor : Qt.alpha(Config.surface3Color, 0.58)
+                    border.width: 1
+                    border.color: root.active ? Qt.alpha(Config.textReverseColor, 0.22) : Qt.alpha(Config.textColor, 0.10)
 
                     Text {
                         anchors.centerIn: parent

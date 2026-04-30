@@ -37,13 +37,15 @@ Item {
                 gradient: Gradient {
                     GradientStop {
                         position: 0.0
-                        color: Config.surface2Color
+                        color: Qt.alpha(Config.surface2Color, 0.62)
                     }
                     GradientStop {
                         position: 1.0
-                        color: Config.surface1Color
+                        color: Qt.alpha(Config.surface1Color, 0.36)
                     }
                 }
+                border.width: 1
+                border.color: Qt.alpha(Config.textColor, 0.11)
 
                 Text {
                     anchors.centerIn: parent
@@ -85,7 +87,9 @@ Item {
                 Layout.preferredHeight: 36
                 Layout.preferredWidth: batteryContent.implicitWidth + 16
                 radius: Config.radius
-                color: Config.surface1Color
+                color: Qt.alpha(Config.surface1Color, 0.36)
+                border.width: 1
+                border.color: Qt.alpha(Config.textColor, 0.10)
 
                 RowLayout {
                     id: batteryContent
@@ -143,7 +147,7 @@ Item {
         Rectangle {
             Layout.fillWidth: true
             Layout.preferredHeight: 1
-            color: Config.surface1Color
+            color: Qt.alpha(Config.textColor, 0.14)
         }
 
         MediaWidget {
@@ -156,7 +160,7 @@ Item {
             visible: mediaWidget.visible
             Layout.fillWidth: true
             Layout.preferredHeight: 1
-            color: Config.surface1Color
+            color: Qt.alpha(Config.textColor, 0.14)
         }
 
         // BUTTON GRID
@@ -226,7 +230,7 @@ Item {
         Rectangle {
             Layout.fillWidth: true
             Layout.preferredHeight: 1
-            color: Config.surface1Color
+            color: Qt.alpha(Config.textColor, 0.14)
         }
 
         // SLIDERS
@@ -238,7 +242,7 @@ Item {
             QsSlider {
                 icon: AudioService.systemIcon
                 value: AudioService.volume
-                fillColor: AudioService.muted ? Config.surface3Color : Config.accentColor
+                fillColor: AudioService.muted ? Qt.alpha(Config.surface3Color, 0.55) : Config.accentColor
 
                 onMoved: val => AudioService.setVolume(val)
                 onIconClicked: AudioService.toggleMute()

@@ -38,7 +38,7 @@ Item {
         Rectangle {
             Layout.fillWidth: true
             Layout.preferredHeight: 1
-            color: Config.surface1Color
+            color: Qt.alpha(Config.textColor, 0.14)
         }
 
         // Content
@@ -53,7 +53,9 @@ Item {
                 Layout.preferredWidth: 64
                 Layout.preferredHeight: 64
                 radius: 32
-                color: BrightnessService.nightLightEnabled ? Qt.alpha(Config.warningColor, 0.2) : Config.surface1Color
+                color: BrightnessService.nightLightEnabled ? Qt.alpha(Config.warningColor, 0.22) : Qt.alpha(Config.surface1Color, 0.34)
+                border.width: 1
+                border.color: BrightnessService.nightLightEnabled ? Qt.alpha(Config.warningColor, 0.30) : Qt.alpha(Config.textColor, 0.10)
 
                 Behavior on color {
                     ColorAnimation {
@@ -283,7 +285,7 @@ Item {
                                     return Qt.alpha(modelData.color, 0.3);
                                 if (BrightnessService.nightLightTemperature === modelData.temp)
                                     return Qt.alpha(modelData.color, 0.2);
-                                return Config.surface1Color;
+                                return Qt.alpha(Config.surface1Color, 0.34);
                             }
 
                             border.width: BrightnessService.nightLightTemperature === modelData.temp ? 1 : 0

@@ -83,10 +83,10 @@ Item {
             passwordCharacter: "•"
 
             background: Rectangle {
-                color: Config.surface1Color
+                color: Qt.alpha(Config.surface1Color, 0.40)
                 radius: Config.radius
                 border.width: 1
-                border.color: passInput.activeFocus ? Config.accentColor : Config.surface2Color
+                border.color: passInput.activeFocus ? Qt.alpha(Config.accentColor, 0.46) : Qt.alpha(Config.textColor, 0.10)
 
                 // Smooth border animation on focus
                 Behavior on border.color {

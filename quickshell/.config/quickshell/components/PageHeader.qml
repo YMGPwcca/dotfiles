@@ -26,7 +26,9 @@ RowLayout {
         Layout.preferredWidth: 36
         Layout.preferredHeight: 36
         radius: Config.radius
-        color: Qt.alpha(root.iconColor, 0.15)
+        color: Qt.alpha(Config.surface1Color, 0.38)
+        border.width: 1
+        border.color: Qt.alpha(root.iconColor, 0.20)
 
         Text {
             anchors.centerIn: parent

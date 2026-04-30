@@ -32,7 +32,9 @@ Rectangle {
     Layout.fillWidth: true
     implicitHeight: contentLayout.implicitHeight + contentLayout.anchors.topMargin + contentLayout.anchors.bottomMargin
     radius: Config.radiusLarge
-    color: Config.surface1Color
+    color: Qt.alpha(Config.surface1Color, 0.36)
+    border.width: 1
+    border.color: Qt.alpha(Config.textColor, 0.10)
 
     // --- BLURRED BACKGROUND ---
     Item {
@@ -64,8 +66,20 @@ Rectangle {
         Rectangle {
             anchors.fill: parent
             color: "#000000"
-            opacity: 0.3
+            opacity: 0.22
         }
+    }
+
+    Rectangle {
+        anchors.left: parent.left
+        anchors.right: parent.right
+        anchors.top: parent.top
+        anchors.leftMargin: 1
+        anchors.rightMargin: 1
+        anchors.topMargin: 1
+        height: 1
+        radius: Config.radiusLarge
+        color: Qt.alpha(Config.textColor, 0.14)
     }
 
     // --- DISMISS BUTTON ---
@@ -79,7 +93,9 @@ Rectangle {
         width: 22
         height: 22
         radius: 11
-        color: dismissMouse.containsMouse ? Config.surface3Color : Config.surface2Color
+        color: dismissMouse.containsMouse ? Qt.alpha(Config.surface3Color, 0.72) : Qt.alpha(Config.surface2Color, 0.46)
+        border.width: 1
+        border.color: Qt.alpha(Config.textColor, 0.10)
         opacity: dismissMouse.containsMouse ? 1.0 : 0.7
 
         Behavior on color {
@@ -133,7 +149,9 @@ Rectangle {
                 Rectangle {
                     anchors.fill: parent
                     radius: Config.radius
-                    color: Config.surface2Color
+                    color: Qt.alpha(Config.surface2Color, 0.46)
+                    border.width: 1
+                    border.color: Qt.alpha(Config.textColor, 0.10)
                 }
 
                 Image {
@@ -336,7 +354,7 @@ Rectangle {
                 Rectangle {
                     anchors.fill: parent
                     radius: parent.height / 2
-                    color: Config.surface3Color
+                    color: Qt.alpha(Config.surface3Color, 0.55)
                     opacity: 0.5
                 }
 

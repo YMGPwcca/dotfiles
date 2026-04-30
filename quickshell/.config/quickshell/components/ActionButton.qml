@@ -26,7 +26,9 @@ Rectangle {
     Layout.preferredWidth: implicitWidth
     radius: Config.radius
 
-    color: mouseArea.containsMouse ? root.hoverColor : root.baseColor
+    color: mouseArea.containsMouse ? Qt.alpha(root.hoverColor, 0.72) : Qt.alpha(root.baseColor, 0.38)
+    border.width: 1
+    border.color: mouseArea.containsMouse ? Qt.alpha(root.hoverTextColor, 0.24) : Qt.alpha(Config.textColor, 0.10)
 
     Behavior on color {
         ColorAnimation {

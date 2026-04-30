@@ -137,7 +137,24 @@ Item {
         // Background
         Rectangle {
             anchors.fill: parent
-            color: Config.backgroundTransparentColor
+            color: {
+                if (root.isUrgent)
+                    return Qt.alpha(Config.errorColor, root.popupMode ? 0.24 : 0.18);
+                return Qt.alpha(Config.backgroundColor, 0.5);
+
+            }
+        }
+
+        Rectangle {
+            anchors.left: parent.left
+            anchors.right: parent.right
+            anchors.top: parent.top
+            anchors.leftMargin: 1
+            anchors.rightMargin: 1
+            anchors.topMargin: 1
+            height: 1
+            radius: Config.radiusLarge
+            color: Qt.alpha(Config.textColor, 0.12)
         }
 
         // Progress bar (only in popup mode)
@@ -168,7 +185,9 @@ Item {
                     Layout.preferredHeight: 42
                     Layout.alignment: Qt.AlignTop
                     radius: width / 2
-                    color: root.isUrgent ? Qt.alpha(Config.errorColor, 0.2) : Config.surface1Color
+                    color: root.isUrgent ? Qt.alpha(Config.errorColor, 0.30) : Qt.alpha(Config.surface1Color, root.popupMode ? 0.72 : 0.52)
+                    border.width: 1
+                    border.color: root.isUrgent ? Qt.alpha(Config.errorColor, 0.38) : Qt.alpha(Config.textColor, root.popupMode ? 0.18 : 0.10)
 
                     Image {
                         id: notifImage
@@ -256,9 +275,10 @@ Item {
                     // Notification body
                     Text {
                         text: root.body
-                        color: Config.subtextColor
+                        color: root.popupMode ? Config.textColor : Config.subtextColor
                         font.family: Config.font
                         font.pixelSize: Config.fontSizeSmall
+                        opacity: root.popupMode ? 0.88 : 1.0
                         wrapMode: Text.Wrap
                         maximumLineCount: 3
                         elide: Text.ElideRight
@@ -281,10 +301,10 @@ Item {
         border.width: 1
         border.color: {
             if (root.isUrgent)
-                return Config.errorColor;
+                return Qt.alpha(Config.errorColor, 0.55);
             if (mouseArea.containsMouse)
-                return Config.surface2Color;
-            return "transparent";
+                return Qt.alpha(Config.accentColor, 0.30);
+            return Qt.alpha(Config.textColor, 0.10);
         }
     }
 

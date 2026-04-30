@@ -35,17 +35,17 @@ Rectangle {
     border.width: 1
     border.color: {
         if (root.active)
-            return Config.accentColor;
+            return Qt.alpha(Config.accentColor, 0.44);
         if (root.connecting)
-            return Config.warningColor;
-        return "transparent";
+            return Qt.alpha(Config.warningColor, 0.44);
+        return Qt.alpha(Config.textColor, 0.09);
     }
 
     // Background color with hover
     color: {
         if (mouseArea.containsMouse)
-            return Config.surface1Color;
-        return Qt.alpha(Config.surface1Color, 0.4);
+            return Qt.alpha(Config.surface2Color, 0.50);
+        return Qt.alpha(Config.surface1Color, 0.34);
     }
     Behavior on color {
         ColorAnimation {
@@ -77,8 +77,10 @@ Rectangle {
                     return Config.accentColor;
                 if (root.connecting)
                     return Config.warningColor;
-                return Config.surface2Color;
+                return Qt.alpha(Config.surface2Color, 0.56);
             }
+            border.width: 1
+            border.color: root.active ? Qt.alpha(Config.textReverseColor, 0.22) : Qt.alpha(Config.textColor, 0.10)
 
             Item {
                 anchors.fill: parent
@@ -173,7 +175,9 @@ Rectangle {
             Layout.preferredWidth: 30
             Layout.preferredHeight: 30
             radius: 15
-            color: menuMouse.containsMouse || menuPopup.opened ? Config.surface2Color : "transparent"
+            color: menuMouse.containsMouse || menuPopup.opened ? Qt.alpha(Config.surface2Color, 0.50) : "transparent"
+            border.width: menuMouse.containsMouse || menuPopup.opened ? 1 : 0
+            border.color: Qt.alpha(Config.textColor, 0.10)
 
             Text {
                 anchors.centerIn: parent
@@ -202,8 +206,8 @@ Rectangle {
                 padding: 0
 
                 background: Rectangle {
-                    color: Config.surface0Color
-                    border.color: Config.surface2Color
+                    color: Qt.alpha(Config.backgroundColor, 0.78)
+                    border.color: Qt.alpha(Config.textColor, 0.14)
                     border.width: 1
                     radius: Config.radius
                 }
@@ -224,7 +228,7 @@ Rectangle {
                             Layout.fillWidth: true
                             Layout.preferredHeight: 30
                             radius: Config.radiusSmall
-                            color: itemMouse.containsMouse ? Config.surface1Color : "transparent"
+                            color: itemMouse.containsMouse ? Qt.alpha(Config.surface1Color, 0.44) : "transparent"
 
                             RowLayout {
                                 anchors.fill: parent

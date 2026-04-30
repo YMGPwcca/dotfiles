@@ -20,11 +20,13 @@ Rectangle {
 
     color: {
         if (root.loading)
-            return Config.accentColor;
+            return Qt.alpha(Config.accentColor, 0.86);
         if (mouseArea.containsMouse)
-            return Config.surface2Color;
-        return Config.surface1Color;
+            return Qt.alpha(Config.surface2Color, 0.58);
+        return Qt.alpha(Config.surface1Color, 0.42);
     }
+    border.width: 1
+    border.color: root.loading ? Qt.alpha(Config.textReverseColor, 0.22) : Qt.alpha(Config.textColor, 0.10)
 
     Behavior on color {
         ColorAnimation { duration: Config.animDurationShort }

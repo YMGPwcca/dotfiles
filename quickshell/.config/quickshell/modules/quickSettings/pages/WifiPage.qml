@@ -43,7 +43,7 @@ Item {
         Rectangle {
             Layout.fillWidth: true
             Layout.preferredHeight: 1
-            color: Config.surface1Color
+            color: Qt.alpha(Config.textColor, 0.14)
         }
 
         // Network List
@@ -154,7 +154,9 @@ Item {
                     width: 64
                     height: 64
                     radius: 32
-                    color: Config.surface1Color
+                    color: Qt.alpha(Config.surface1Color, 0.34)
+                    border.width: 1
+                    border.color: Qt.alpha(Config.textColor, 0.10)
 
                     Text {
                         anchors.centerIn: parent

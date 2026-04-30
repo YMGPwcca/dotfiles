@@ -35,8 +35,8 @@ Item {
             ActionButton {
                 visible: BluetoothService.isPowered
                 icon: BluetoothService.isDiscoverable ? "󰈈" : "󰈉"
-                baseColor: BluetoothService.isDiscoverable ? Config.accentColor : Config.surface1Color
-                hoverColor: BluetoothService.isDiscoverable ? Config.accentColor : Config.surface2Color
+                baseColor: BluetoothService.isDiscoverable ? Config.accentColor : Qt.alpha(Config.surface1Color, 0.42)
+                hoverColor: BluetoothService.isDiscoverable ? Config.accentColor : Qt.alpha(Config.surface2Color, 0.58)
                 textColor: BluetoothService.isDiscoverable ? Config.textReverseColor : Config.textColor
                 onClicked: BluetoothService.toggleDiscoverable()
             }
@@ -64,7 +64,7 @@ Item {
         Rectangle {
             Layout.fillWidth: true
             Layout.preferredHeight: 1
-            color: Config.surface1Color
+            color: Qt.alpha(Config.textColor, 0.14)
         }
 
         // Device List
@@ -154,7 +154,9 @@ Item {
                     width: 64
                     height: 64
                     radius: 32
-                    color: Config.surface1Color
+                    color: Qt.alpha(Config.surface1Color, 0.34)
+                    border.width: 1
+                    border.color: Qt.alpha(Config.textColor, 0.10)
 
                     Text {
                         anchors.centerIn: parent

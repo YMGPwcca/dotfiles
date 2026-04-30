@@ -68,7 +68,9 @@ QsPopupWindow {
                 Layout.preferredWidth: 36
                 Layout.preferredHeight: 36
                 radius: Config.radius
-                color: Qt.alpha(Config.accentColor, 0.15)
+                color: Qt.alpha(Config.surface1Color, 0.38)
+                border.width: 1
+                border.color: Qt.alpha(Config.accentColor, 0.20)
 
                 Text {
                     anchors.centerIn: parent
@@ -93,7 +95,9 @@ QsPopupWindow {
                 Layout.preferredHeight: 26
                 Layout.preferredWidth: 76
                 radius: Config.radius
-                color: todayHover.hovered ? Config.surface2Color : Config.surface1Color
+                color: todayHover.hovered ? Qt.alpha(Config.surface2Color, 0.58) : Qt.alpha(Config.surface1Color, 0.42)
+                border.width: 1
+                border.color: todayHover.hovered ? Qt.alpha(Config.accentColor, 0.26) : Qt.alpha(Config.textColor, 0.10)
 
                 Behavior on color {
                     ColorAnimation {
@@ -137,7 +141,7 @@ QsPopupWindow {
         Rectangle {
             Layout.fillWidth: true
             Layout.preferredHeight: 1
-            color: Config.surface1Color
+            color: Qt.alpha(Config.textColor, 0.14)
         }
 
         // ==================== MONTH NAVIGATION ====================
@@ -149,7 +153,9 @@ QsPopupWindow {
                 Layout.preferredWidth: 28
                 Layout.preferredHeight: 28
                 radius: height / 2
-                color: prevHover.hovered ? Config.surface1Color : "transparent"
+                color: prevHover.hovered ? Qt.alpha(Config.surface1Color, 0.42) : "transparent"
+                border.width: prevHover.hovered ? 1 : 0
+                border.color: Qt.alpha(Config.textColor, 0.10)
 
                 Behavior on color {
                     ColorAnimation {
@@ -214,7 +220,9 @@ QsPopupWindow {
                 Layout.preferredWidth: 28
                 Layout.preferredHeight: 28
                 radius: height / 2
-                color: nextHover.hovered ? Config.surface1Color : "transparent"
+                color: nextHover.hovered ? Qt.alpha(Config.surface1Color, 0.42) : "transparent"
+                border.width: nextHover.hovered ? 1 : 0
+                border.color: Qt.alpha(Config.textColor, 0.10)
 
                 Behavior on color {
                     ColorAnimation {
@@ -273,7 +281,9 @@ QsPopupWindow {
                         Layout.fillWidth: true
                         Layout.fillHeight: true
                         radius: Config.radius
-                        color: selected ? Config.accentColor : (monthItemHover.hovered ? Config.surface1Color : "transparent")
+                        color: selected ? Qt.alpha(Config.accentColor, 0.82) : (monthItemHover.hovered ? Qt.alpha(Config.surface1Color, 0.42) : "transparent")
+                        border.width: selected || monthItemHover.hovered ? 1 : 0
+                        border.color: selected ? Qt.alpha(Config.textReverseColor, 0.22) : Qt.alpha(Config.textColor, 0.10)
 
                         Behavior on color {
                             ColorAnimation {
@@ -361,7 +371,9 @@ QsPopupWindow {
                                 width: Math.min(parent.width, parent.height)
                                 height: width
                                 radius: width / 2
-                                color: dayCell.isToday ? Config.accentColor : "transparent"
+                                color: dayCell.isToday ? Qt.alpha(Config.accentColor, 0.86) : "transparent"
+                                border.width: dayCell.isToday ? 1 : 0
+                                border.color: Qt.alpha(Config.textReverseColor, 0.22)
 
                                 Behavior on color {
                                     ColorAnimation {

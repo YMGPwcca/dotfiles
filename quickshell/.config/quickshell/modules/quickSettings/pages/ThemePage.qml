@@ -63,9 +63,9 @@ Item {
                     Layout.fillWidth: true
                     Layout.preferredHeight: 36
                     radius: Config.radius
-                    color: !ThemeService.isAutoMode ? Config.accentColor : (presetMouse.containsMouse ? Config.surface1Color : Config.surface0Color)
+                    color: !ThemeService.isAutoMode ? Qt.alpha(Config.accentColor, 0.86) : (presetMouse.containsMouse ? Qt.alpha(Config.surface1Color, 0.42) : Qt.alpha(Config.surface0Color, 0.32))
                     border.width: 1
-                    border.color: !ThemeService.isAutoMode ? Config.accentColor : Config.surface1Color
+                    border.color: !ThemeService.isAutoMode ? Qt.alpha(Config.accentColor, 0.46) : Qt.alpha(Config.textColor, 0.10)
 
                     Behavior on color {
                         ColorAnimation { duration: Config.animDurationShort }
@@ -97,9 +97,9 @@ Item {
                     Layout.fillWidth: true
                     Layout.preferredHeight: 36
                     radius: Config.radius
-                    color: ThemeService.isAutoMode ? Config.accentColor : (autoMouse.containsMouse ? Config.surface1Color : Config.surface0Color)
+                    color: ThemeService.isAutoMode ? Qt.alpha(Config.accentColor, 0.86) : (autoMouse.containsMouse ? Qt.alpha(Config.surface1Color, 0.42) : Qt.alpha(Config.surface0Color, 0.32))
                     border.width: 1
-                    border.color: ThemeService.isAutoMode ? Config.accentColor : Config.surface1Color
+                    border.color: ThemeService.isAutoMode ? Qt.alpha(Config.accentColor, 0.46) : Qt.alpha(Config.textColor, 0.10)
 
                     Behavior on color {
                         ColorAnimation { duration: Config.animDurationShort }
@@ -139,9 +139,9 @@ Item {
                     Layout.fillWidth: true
                     Layout.preferredHeight: 36
                     radius: Config.radius
-                    color: ThemeService.isDarkMode ? Config.accentColor : (darkMouse.containsMouse ? Config.surface1Color : Config.surface0Color)
+                    color: ThemeService.isDarkMode ? Qt.alpha(Config.accentColor, 0.86) : (darkMouse.containsMouse ? Qt.alpha(Config.surface1Color, 0.42) : Qt.alpha(Config.surface0Color, 0.32))
                     border.width: 1
-                    border.color: ThemeService.isDarkMode ? Config.accentColor : Config.surface1Color
+                    border.color: ThemeService.isDarkMode ? Qt.alpha(Config.accentColor, 0.46) : Qt.alpha(Config.textColor, 0.10)
 
                     Behavior on color {
                         ColorAnimation { duration: Config.animDurationShort }
@@ -172,9 +172,9 @@ Item {
                     Layout.fillWidth: true
                     Layout.preferredHeight: 36
                     radius: Config.radius
-                    color: !ThemeService.isDarkMode ? Config.accentColor : (lightMouse.containsMouse ? Config.surface1Color : Config.surface0Color)
+                    color: !ThemeService.isDarkMode ? Qt.alpha(Config.accentColor, 0.86) : (lightMouse.containsMouse ? Qt.alpha(Config.surface1Color, 0.42) : Qt.alpha(Config.surface0Color, 0.32))
                     border.width: 1
-                    border.color: !ThemeService.isDarkMode ? Config.accentColor : Config.surface1Color
+                    border.color: !ThemeService.isDarkMode ? Qt.alpha(Config.accentColor, 0.46) : Qt.alpha(Config.textColor, 0.10)
 
                     Behavior on color {
                         ColorAnimation { duration: Config.animDurationShort }
@@ -206,7 +206,7 @@ Item {
             Rectangle {
                 Layout.fillWidth: true
                 Layout.preferredHeight: 1
-                color: Config.surface1Color
+                color: Qt.alpha(Config.textColor, 0.14)
             }
 
             // Auto mode indicator
@@ -252,9 +252,9 @@ Item {
                         Layout.fillWidth: true
                         Layout.preferredHeight: 76
                         radius: Config.radius
-                        color: cardMouse.containsMouse ? Config.surface1Color : Config.surface0Color
+                        color: cardMouse.containsMouse ? Qt.alpha(Config.surface1Color, 0.44) : Qt.alpha(Config.surface0Color, 0.34)
                         border.width: isCurrent ? 2 : 1
-                        border.color: isCurrent ? Config.accentColor : (cardMouse.containsMouse ? Config.surface2Color : Config.surface1Color)
+                        border.color: isCurrent ? Qt.alpha(Config.accentColor, 0.55) : (cardMouse.containsMouse ? Qt.alpha(Config.textColor, 0.16) : Qt.alpha(Config.textColor, 0.09))
 
                         Behavior on color {
                             ColorAnimation { duration: Config.animDurationShort }

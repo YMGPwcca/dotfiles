@@ -47,7 +47,9 @@ QsPopupWindow {
                 Layout.preferredWidth: 36
                 Layout.preferredHeight: 36
                 radius: Config.radius
-                color: Qt.alpha(Config.accentColor, 0.15)
+                color: Qt.alpha(Config.surface1Color, 0.38)
+                border.width: 1
+                border.color: Qt.alpha(Config.accentColor, 0.20)
 
                 Text {
                     anchors.centerIn: parent
@@ -72,7 +74,9 @@ QsPopupWindow {
                 Layout.preferredHeight: 26
                 Layout.preferredWidth: uptimeContent.implicitWidth + 14
                 radius: Config.radius
-                color: Config.surface1Color
+                color: Qt.alpha(Config.surface1Color, 0.42)
+                border.width: 1
+                border.color: Qt.alpha(Config.textColor, 0.10)
 
                 RowLayout {
                     id: uptimeContent
@@ -101,7 +105,7 @@ QsPopupWindow {
         Rectangle {
             Layout.fillWidth: true
             Layout.preferredHeight: 1
-            color: Config.surface1Color
+            color: Qt.alpha(Config.textColor, 0.14)
         }
 
         // ==================== GAUGES (CPU + GPU) ====================
@@ -133,7 +137,7 @@ QsPopupWindow {
         Rectangle {
             Layout.fillWidth: true
             Layout.preferredHeight: 1
-            color: Config.surface1Color
+            color: Qt.alpha(Config.textColor, 0.14)
         }
 
         // ==================== RAM ====================
@@ -158,7 +162,7 @@ QsPopupWindow {
         Rectangle {
             Layout.fillWidth: true
             Layout.preferredHeight: 1
-            color: Config.surface1Color
+            color: Qt.alpha(Config.textColor, 0.14)
         }
 
         // ==================== NETWORK ====================
@@ -196,7 +200,20 @@ QsPopupWindow {
                     Layout.fillWidth: true
                     implicitHeight: 34
                     radius: Config.radius
-                    color: Config.surface0Color
+                    color: Qt.alpha(Config.surface0Color, 0.44)
+                    border.width: 1
+                    border.color: Qt.alpha(Config.textColor, 0.09)
+
+                    Rectangle {
+                        anchors.left: parent.left
+                        anchors.right: parent.right
+                        anchors.top: parent.top
+                        anchors.leftMargin: 1
+                        anchors.rightMargin: 1
+                        anchors.topMargin: 1
+                        height: 1
+                        color: Qt.alpha(Config.textColor, 0.10)
+                    }
 
                     RowLayout {
                         anchors.fill: parent
@@ -227,7 +244,20 @@ QsPopupWindow {
                     Layout.fillWidth: true
                     implicitHeight: 34
                     radius: Config.radius
-                    color: Config.surface0Color
+                    color: Qt.alpha(Config.surface0Color, 0.44)
+                    border.width: 1
+                    border.color: Qt.alpha(Config.textColor, 0.09)
+
+                    Rectangle {
+                        anchors.left: parent.left
+                        anchors.right: parent.right
+                        anchors.top: parent.top
+                        anchors.leftMargin: 1
+                        anchors.rightMargin: 1
+                        anchors.topMargin: 1
+                        height: 1
+                        color: Qt.alpha(Config.textColor, 0.10)
+                    }
 
                     RowLayout {
                         anchors.fill: parent
@@ -305,7 +335,7 @@ QsPopupWindow {
 
                     ctx.beginPath();
                     ctx.arc(cx, cy, radius, startAngle, endAngle);
-                    ctx.strokeStyle = Config.surface2Color.toString();
+                    ctx.strokeStyle = Qt.alpha(Config.surface2Color, 0.58).toString();
                     ctx.lineWidth = lineWidth;
                     ctx.lineCap = "round";
                     ctx.stroke();
@@ -369,7 +399,9 @@ QsPopupWindow {
             Layout.preferredWidth: tempText.implicitWidth + 14
             Layout.preferredHeight: 24
             radius: 8
-            color: Qt.alpha(gauge.badgeColor, 0.15)
+            color: Qt.alpha(gauge.badgeColor, 0.18)
+            border.width: 1
+            border.color: Qt.alpha(gauge.badgeColor, 0.26)
 
             Behavior on color {
                 ColorAnimation {
@@ -477,7 +509,9 @@ QsPopupWindow {
             Layout.fillWidth: true
             Layout.preferredHeight: 8
             radius: 4
-            color: Config.surface2Color
+            color: Qt.alpha(Config.surface2Color, 0.50)
+            border.width: 1
+            border.color: Qt.alpha(Config.textColor, 0.06)
 
             Rectangle {
                 width: parent.width * (metric.animatedUsage / 100)

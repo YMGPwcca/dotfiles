@@ -14,7 +14,9 @@ Switch {
         implicitHeight: root.implicitHeight
         radius: Config.radiusLarge
 
-        color: root.checked ? Config.accentColor : Config.surface2Color
+        color: root.checked ? Qt.alpha(Config.accentColor, 0.86) : Qt.alpha(Config.surface2Color, 0.46)
+        border.width: 1
+        border.color: root.checked ? Qt.alpha(Config.textReverseColor, 0.22) : Qt.alpha(Config.textColor, 0.10)
 
         Behavior on color {
             ColorAnimation {
@@ -30,7 +32,7 @@ Switch {
             height: parent.height - 8
             radius: width / 2
 
-            color: root.checked ? Config.textReverseColor : Config.textColor
+            color: root.checked ? Config.textReverseColor : Qt.alpha(Config.textColor, 0.88)
 
             Behavior on color {
                 ColorAnimation {

@@ -43,7 +43,9 @@ Item {
             radius: Config.radiusLarge
 
             // Color changes on hover (button feedback)
-            color: iconMouse.containsMouse ? Config.surface2Color : Config.surface1Color
+            color: iconMouse.containsMouse ? Qt.alpha(Config.surface2Color, 0.52) : Qt.alpha(Config.surface1Color, 0.34)
+            border.width: 1
+            border.color: Qt.alpha(Config.textColor, iconMouse.containsMouse ? 0.16 : 0.09)
 
             Behavior on color {
                 ColorAnimation {
@@ -130,7 +132,7 @@ Item {
 
                     width: Math.max(0, ((1 - sliderContainer.visualPos) * parent.width) - sliderContainer.handleGap)
                     height: 28
-                    color: Config.surface2Color
+                    color: Qt.alpha(Config.surface2Color, 0.48)
 
                     topLeftRadius: 2
                     bottomLeftRadius: 2

@@ -29,7 +29,9 @@ QsPopupWindow {
                 Layout.preferredWidth: 36
                 Layout.preferredHeight: 36
                 radius: Config.radius
-                color: NotificationService.dndEnabled ? Qt.alpha(Config.warningColor, 0.2) : Qt.alpha(Config.accentColor, 0.15)
+                color: NotificationService.dndEnabled ? Qt.alpha(Config.warningColor, 0.22) : Qt.alpha(Config.surface1Color, 0.38)
+                border.width: 1
+                border.color: NotificationService.dndEnabled ? Qt.alpha(Config.warningColor, 0.30) : Qt.alpha(Config.accentColor, 0.20)
 
                 Behavior on color {
                     ColorAnimation {
@@ -83,8 +85,8 @@ QsPopupWindow {
                 icon: NotificationService.dndEnabled ? "󰂛" : "󰂚"
                 iconSize: 14
                 text: "DND"
-                baseColor: NotificationService.dndEnabled ? Config.warningColor : Config.surface1Color
-                hoverColor: NotificationService.dndEnabled ? Config.warningColor : Config.surface2Color
+                baseColor: NotificationService.dndEnabled ? Config.warningColor : Qt.alpha(Config.surface1Color, 0.42)
+                hoverColor: NotificationService.dndEnabled ? Config.warningColor : Qt.alpha(Config.surface2Color, 0.58)
                 textColor: NotificationService.dndEnabled ? Config.textReverseColor : Config.subtextColor
                 hoverTextColor: NotificationService.dndEnabled ? Config.textReverseColor : Config.subtextColor
                 onClicked: NotificationService.toggleDnd()
@@ -104,7 +106,7 @@ QsPopupWindow {
         Rectangle {
             Layout.fillWidth: true
             Layout.preferredHeight: 1
-            color: Config.surface1Color
+            color: Qt.alpha(Config.textColor, 0.14)
         }
 
         // ========== NOTIFICATION LIST ==========
@@ -169,7 +171,7 @@ QsPopupWindow {
                         implicitWidth: 4
                         implicitHeight: 100
                         radius: 2
-                        color: Config.surface2Color
+                        color: Qt.alpha(Config.textColor, 0.34)
                         opacity: parent.active ? 0.8 : 0
                     }
 
@@ -191,15 +193,17 @@ QsPopupWindow {
                     width: 64
                     height: 64
                     radius: 32
-                    color: NotificationService.dndEnabled ? Qt.alpha(Config.warningColor, 0.2) : Config.surface1Color
+                    color: NotificationService.dndEnabled ? Qt.alpha(Config.warningColor, 0.22) : Qt.alpha(Config.surface1Color, 0.36)
+                    border.width: 1
+                    border.color: NotificationService.dndEnabled ? Qt.alpha(Config.warningColor, 0.32) : Qt.alpha(Config.textColor, 0.18)
 
                     Text {
                         anchors.centerIn: parent
                         text: NotificationService.dndEnabled ? "󰂛" : "󰂜"
                         font.family: Config.font
                         font.pixelSize: Config.fontSizeIconLarge
-                        color: NotificationService.dndEnabled ? Config.warningColor : Config.subtextColor
-                        opacity: NotificationService.dndEnabled ? 1.0 : 0.5
+                        color: NotificationService.dndEnabled ? Config.warningColor : Config.textColor
+                        opacity: NotificationService.dndEnabled ? 1.0 : 0.82
                     }
                 }
 
@@ -208,8 +212,8 @@ QsPopupWindow {
                     text: NotificationService.dndEnabled ? "Do Not Disturb" : "No notifications"
                     font.family: Config.font
                     font.pixelSize: Config.fontSizeNormal
-                    color: NotificationService.dndEnabled ? Config.warningColor : Config.subtextColor
-                    opacity: 0.7
+                    color: NotificationService.dndEnabled ? Config.warningColor : Config.textColor
+                    opacity: 0.82
                 }
 
                 Text {
@@ -217,8 +221,8 @@ QsPopupWindow {
                     text: NotificationService.dndEnabled ? "Notifications silenced" : "You're all caught up!"
                     font.family: Config.font
                     font.pixelSize: Config.fontSizeSmall
-                    color: Config.subtextColor
-                    opacity: 0.5
+                    color: Config.textColor
+                    opacity: 0.62
                 }
             }
         }
