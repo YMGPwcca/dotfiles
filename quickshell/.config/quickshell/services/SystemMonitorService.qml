@@ -113,7 +113,7 @@ Singleton {
     // ========================================================================
 
     Timer {
-        interval: 2000
+        interval: 1000
         running: true
         repeat: true
         onTriggered: {
@@ -332,8 +332,8 @@ Singleton {
                     const tx = parseFloat(parts[1]);
 
                     if (internal.prevRx > 0) {
-                        const rxDelta = (rx - internal.prevRx) / 2; // per second (2s interval)
-                        const txDelta = (tx - internal.prevTx) / 2;
+                        const rxDelta = rx - internal.prevRx; // per second (1s interval)
+                        const txDelta = tx - internal.prevTx;
                         internal.networkDown = root._formatBytes(Math.max(0, rxDelta));
                         internal.networkUp = root._formatBytes(Math.max(0, txDelta));
                     }
