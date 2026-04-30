@@ -18,11 +18,15 @@ QsPopupWindow {
     // Calendar state
     property int displayMonth: today.getMonth()
     property int displayYear: today.getFullYear()
+    property bool monthPickerVisible: false
     readonly property date today: TimeService.date
+    readonly property var englishLocale: Qt.locale("en_US")
+    readonly property var monthNames: ["January", "February", "March", "April", "May", "June", "July", "August", "September", "October", "November", "December"]
 
     function resetToToday() {
         displayMonth = today.getMonth();
         displayYear = today.getFullYear();
+        monthPickerVisible = false;
     }
 
     function previousMonth() {
@@ -46,6 +50,8 @@ QsPopupWindow {
     onVisibleChanged: {
         if (visible)
             resetToToday();
+        else
+            monthPickerVisible = false;
     }
 
     ColumnLayout {
@@ -85,9 +91,15 @@ QsPopupWindow {
             // Today badge
             Rectangle {
                 Layout.preferredHeight: 26
-                Layout.preferredWidth: todayBadgeContent.implicitWidth + 14
+                Layout.preferredWidth: 76
                 radius: Config.radius
-                color: Config.surface1Color
+                color: todayHover.hovered ? Config.surface2Color : Config.surface1Color
+
+                Behavior on color {
+                    ColorAnimation {
+                        duration: Config.animDuration
+                    }
+                }
 
                 RowLayout {
                     id: todayBadgeContent
@@ -98,16 +110,25 @@ QsPopupWindow {
                         text: "󰃶"
                         font.family: Config.font
                         font.pixelSize: Config.fontSizeSmall
-                        color: Config.subtextColor
+                        color: Config.accentColor
                     }
 
                     Text {
-                        text: TimeService.format("MMM dd")
+                        text: root.today.toLocaleDateString(root.englishLocale, "MMM dd")
                         font.family: Config.font
                         font.pixelSize: Config.fontSizeSmall
                         font.bold: true
-                        color: Config.subtextColor
+                        color: Config.textColor
                     }
+                }
+
+                HoverHandler {
+                    id: todayHover
+                    cursorShape: Qt.PointingHandCursor
+                }
+
+                TapHandler {
+                    onTapped: root.resetToToday()
                 }
             }
         }
@@ -150,7 +171,12 @@ QsPopupWindow {
                 }
 
                 TapHandler {
-                    onTapped: root.previousMonth()
+                    onTapped: {
+                        if (root.monthPickerVisible)
+                            root.displayYear--;
+                        else
+                            root.previousMonth();
+                    }
                 }
             }
 
@@ -161,25 +187,26 @@ QsPopupWindow {
                 Text {
                     id: monthLabel
                     anchors.centerIn: parent
-                    text: new Date(root.displayYear, root.displayMonth, 1).toLocaleDateString(Qt.locale(), "MMMM yyyy")
+                    text: root.monthPickerVisible ? root.displayYear.toString() : root.monthNames[root.displayMonth] + " - " + root.displayYear
                     font.family: Config.font
                     font.pixelSize: Config.fontSizeNormal
                     font.bold: true
-                    font.capitalization: Font.Capitalize
-                    color: Config.textColor
-                }
+                    color: monthHover.hovered || root.monthPickerVisible ? Config.accentColor : Config.textColor
 
-                HoverHandler {
-                    cursorShape: {
-                        const now = new Date();
-                        if (root.displayMonth === now.getMonth() && root.displayYear === now.getFullYear())
-                            return Qt.ArrowCursor;
-                        return Qt.PointingHandCursor;
+                    Behavior on color {
+                        ColorAnimation {
+                            duration: Config.animDuration
+                        }
                     }
                 }
 
+                HoverHandler {
+                    id: monthHover
+                    cursorShape: Qt.PointingHandCursor
+                }
+
                 TapHandler {
-                    onTapped: root.resetToToday()
+                    onTapped: root.monthPickerVisible = !root.monthPickerVisible
                 }
             }
 
@@ -209,97 +236,168 @@ QsPopupWindow {
                 }
 
                 TapHandler {
-                    onTapped: root.nextMonth()
+                    onTapped: {
+                        if (root.monthPickerVisible)
+                            root.displayYear++;
+                        else
+                            root.nextMonth();
+                    }
                 }
             }
         }
 
-        // ==================== DAY OF WEEK HEADER ====================
-        DayOfWeekRow {
-            Layout.fillWidth: true
-            locale: grid.locale
-
-            delegate: Text {
-                required property var model
-
-                horizontalAlignment: Text.AlignHCenter
-                text: model.shortName
-                font.family: Config.font
-                font.pixelSize: Config.fontSizeSmall
-                font.bold: true
-                color: (model.day === 0 || model.day === 6) ? Config.subtextColor : Config.textColor
-            }
-        }
-
-        // ==================== MONTH GRID ====================
+        // ==================== CALENDAR BODY ====================
         Item {
             Layout.fillWidth: true
-            implicitHeight: grid.implicitHeight
+            Layout.preferredHeight: 218
+            Layout.minimumHeight: 218
+            Layout.maximumHeight: 218
 
-            MonthGrid {
-                id: grid
-
-                month: root.displayMonth
-                year: root.displayYear
+            // ==================== MONTH PICKER ====================
+            GridLayout {
                 anchors.fill: parent
-                spacing: 2
-                locale: Qt.locale()
+                visible: root.monthPickerVisible
+                columns: 3
+                rowSpacing: 8
+                columnSpacing: 6
 
-                delegate: Item {
-                    id: dayCell
+                Repeater {
+                    model: 12
 
-                    required property var model
+                    delegate: Rectangle {
+                        id: monthItem
 
-                    readonly property bool isToday: model.today
-                    readonly property bool isCurrentMonth: model.month === grid.month
-                    readonly property bool isWeekend: {
-                        const dow = model.date.getUTCDay();
-                        return dow === 0 || dow === 6;
-                    }
+                        required property int index
+                        readonly property bool selected: index === root.displayMonth
 
-                    implicitWidth: implicitHeight
-                    implicitHeight: dayText.implicitHeight + 8
-
-                    Rectangle {
-                        anchors.centerIn: parent
-                        width: Math.min(parent.width, parent.height)
-                        height: width
-                        radius: width / 2
-                        color: dayCell.isToday ? Config.accentColor : "transparent"
+                        Layout.fillWidth: true
+                        Layout.fillHeight: true
+                        radius: Config.radius
+                        color: selected ? Config.accentColor : (monthItemHover.hovered ? Config.surface1Color : "transparent")
 
                         Behavior on color {
                             ColorAnimation {
                                 duration: Config.animDuration
                             }
                         }
-                    }
 
-                    Text {
-                        id: dayText
-                        anchors.centerIn: parent
-                        horizontalAlignment: Text.AlignHCenter
-                        text: dayCell.model.day
-                        font.family: Config.font
-                        font.pixelSize: Config.fontSizeSmall
-                        font.bold: dayCell.isToday
-                        color: {
-                            if (dayCell.isToday)
-                                return Config.textReverseColor;
-                            if (dayCell.isWeekend)
-                                return Config.subtextColor;
-                            return Config.textColor;
+                        Text {
+                            anchors.centerIn: parent
+                            text: root.monthNames[monthItem.index].slice(0, 3)
+                            font.family: Config.font
+                            font.pixelSize: Config.fontSizeSmall
+                            font.bold: monthItem.selected
+                            color: monthItem.selected ? Config.textReverseColor : Config.textColor
                         }
-                        opacity: dayCell.isCurrentMonth ? 1.0 : 0.3
+
+                        HoverHandler {
+                            id: monthItemHover
+                            cursorShape: Qt.PointingHandCursor
+                        }
+
+                        TapHandler {
+                            onTapped: {
+                                root.displayMonth = monthItem.index;
+                                root.monthPickerVisible = false;
+                            }
+                        }
                     }
                 }
             }
 
-            WheelHandler {
-                onWheel: event => {
-                    if (event.angleDelta.y > 0)
-                        root.previousMonth();
-                    else if (event.angleDelta.y < 0)
-                        root.nextMonth();
+            ColumnLayout {
+                anchors.fill: parent
+                visible: !root.monthPickerVisible
+                spacing: 12
+
+                // ==================== DAY OF WEEK HEADER ====================
+                DayOfWeekRow {
+                    Layout.fillWidth: true
+                    locale: grid.locale
+
+                    delegate: Text {
+                        required property var model
+
+                        horizontalAlignment: Text.AlignHCenter
+                        text: model.shortName
+                        font.family: Config.font
+                        font.pixelSize: Config.fontSizeSmall
+                        font.bold: true
+                        color: (model.day === 0 || model.day === 6) ? Config.subtextColor : Config.textColor
+                    }
+                }
+
+                // ==================== MONTH GRID ====================
+                Item {
+                    Layout.fillWidth: true
+                    Layout.fillHeight: true
+
+                    MonthGrid {
+                        id: grid
+
+                        month: root.displayMonth
+                        year: root.displayYear
+                        anchors.fill: parent
+                        spacing: 2
+                        locale: root.englishLocale
+
+                        delegate: Item {
+                            id: dayCell
+
+                            required property var model
+
+                            readonly property bool isToday: model.today
+                            readonly property bool isCurrentMonth: model.month === grid.month
+                            readonly property bool isWeekend: {
+                                const dow = model.date.getUTCDay();
+                                return dow === 0 || dow === 6;
+                            }
+
+                            implicitWidth: implicitHeight
+                            implicitHeight: dayText.implicitHeight + 8
+
+                            Rectangle {
+                                anchors.centerIn: parent
+                                width: Math.min(parent.width, parent.height)
+                                height: width
+                                radius: width / 2
+                                color: dayCell.isToday ? Config.accentColor : "transparent"
+
+                                Behavior on color {
+                                    ColorAnimation {
+                                        duration: Config.animDuration
+                                    }
+                                }
+                            }
+
+                            Text {
+                                id: dayText
+                                anchors.centerIn: parent
+                                horizontalAlignment: Text.AlignHCenter
+                                text: dayCell.model.day
+                                font.family: Config.font
+                                font.pixelSize: Config.fontSizeSmall
+                                font.bold: dayCell.isToday
+                                color: {
+                                    if (dayCell.isToday)
+                                        return Config.textReverseColor;
+                                    if (dayCell.isWeekend)
+                                        return Config.subtextColor;
+                                    return Config.textColor;
+                                }
+                                opacity: dayCell.isCurrentMonth ? 1.0 : 0.3
+                            }
+                        }
+                    }
+
+                    WheelHandler {
+                        onWheel: event => {
+                            if (event.angleDelta.y > 0)
+                                root.previousMonth();
+                            else if (event.angleDelta.y < 0)
+                                root.nextMonth();
+                        }
+                    }
                 }
             }
         }
