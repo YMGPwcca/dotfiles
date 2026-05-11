@@ -54,8 +54,9 @@ end
 bind(mod .. " + Return", exec(vars.terminal))
 bind(mod .. " + SHIFT + F", exec(vars.file_manager))
 bind(mod .. " + SHIFT + Z", exec(vars.browser))
+bind(mod .. " + SHIFT + C", exec("code"))
 
-bind(mod .. " + W", hl.dsp.window.kill())
+bind(mod .. " + W", hl.dsp.window.close())
 bind(mod .. " + SHIFT + Space", hl.dsp.window.float())
 bind(mod .. " + P", hl.dsp.window.pseudo())
 bind(mod .. " + SHIFT + F", hl.dsp.window.fullscreen({ mode = "maximized" }))

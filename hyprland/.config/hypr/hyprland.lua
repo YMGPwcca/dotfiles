@@ -1,6 +1,4 @@
 -- Hyprland 0.55 Lua entrypoint.
--- The old hyprland.conf tree is kept for reference, but Hyprland will prefer
--- this file when it exists.
 
 local config_dir = (os.getenv("HOME") or "") .. "/.config/hypr"
 

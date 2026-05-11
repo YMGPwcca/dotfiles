@@ -21,8 +21,6 @@ local/.local/themes/*
 # Monitor and workspace configs (machine-specific)
 # These files are created by the installation script
 # and can be edited by the user or by nwg-displays/workspace-manager
-hyprland/.config/hypr/monitors.conf
-hyprland/.config/hypr/workspaces.conf
 hyprland/.config/hypr/monitors.lua
 hyprland/.config/hypr/workspaces.lua
 

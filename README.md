@@ -185,23 +185,26 @@ lyne state --help
 | Keybind          | Action                 |
 | ---------------- | ---------------------- |
 | `Super + Return` | Terminal (Kitty)       |
-| `Super + D`      | File Manager (Dolphin) |
-| `Super + Z`      | Browser (Zen Browser)  |
+| `Super + Shift + F` | File Manager (Dolphin) |
+| `Super + Shift + Z` | Browser (Zen Browser)  |
+| `Super + Shift + C` | VSCode                 |
 | `Super + Space`  | App Launcher           |
 
 ### Windows
 
 | Keybind                   | Action                          |
 | ------------------------- | ------------------------------- |
-| `Super + Q`               | Kill window                     |
+| `Super + W`               | Close focused window            |
 | `Super + F`               | Fullscreen                      |
-| `Super + Shift + F`       | Fullscreen (pinned)             |
+| `Super + Shift + F`       | Fullscreen maximized            |
 | `Super + Shift + Space`   | Toggle floating                 |
 | `Super + Tab`             | Toggle split                    |
 | `Super + P`               | Pseudo tile                     |
 | `Super + H J K L`         | Move focus (left/down/up/right) |
 | `Super + Shift + H J K L` | Move window                     |
 | `Super + Alt + H J K L`   | Resize window                   |
+| `Super + Left Click`      | Drag window                     |
+| `Super + Right Click`     | Resize window                   |
 
 ### Workspaces
 
@@ -209,11 +212,6 @@ lyne state --help
 | ------------------------------ | ------------------------------------ |
 | `Super + 1-0`                  | Switch to workspace 1-10             |
 | `Super + Shift + 1-0`          | Move window to workspace 1-10        |
-| `Super + Ctrl + H / L`         | Previous / Next workspace            |
-| `Super + Ctrl + Shift + H / L` | Move window to prev / next workspace |
-| `Super + W`                    | Toggle WhatsApp workspace            |
-| `Super + M`                    | Toggle Spotify workspace             |
-| `Super + S`                    | Toggle Magic workspace               |
 
 ### System
 
@@ -222,7 +220,7 @@ lyne state --help
 | `Super + B`         | Wallpaper Picker  |
 | `Super + /`         | Keybinds Help     |
 | `Super + V`         | Clipboard History |
-| `Super + End`       | Power Menu        |
+| `Super + Escape`    | Power Menu        |
 | `Print`             | Screenshot        |
 | `Super + = / -`     | Zoom in / out     |
 | `Super + Shift + R` | Reload QuickShell |

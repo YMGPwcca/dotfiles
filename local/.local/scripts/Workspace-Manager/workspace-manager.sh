@@ -74,31 +74,13 @@ wait_for_hyprland() {
 
 check_source_exists() {
     local hyprland_lua="$HOME/.config/hypr/hyprland.lua"
-    local hyprland_conf="$HOME/.config/hypr/hyprland.conf"
 
-    if [[ -f "$hyprland_lua" ]]; then
-        grep -v '^[[:space:]]*--' "$hyprland_lua" 2>/dev/null |
-            grep -qE "workspaces[.]lua"
-        return $?
-    fi
-
-    if [[ ! -f "$hyprland_conf" ]]; then
+    if [[ ! -f "$hyprland_lua" ]]; then
         return 1
     fi
 
-    # 1. Get the filename only (e.g., workspaces.lua)
-    local config_basename
-    config_basename=$(basename "$CONFIG_FILE")
-
-    # 2. Get the path relative to HOME (e.g., .config/hypr/workspaces.lua)
-    local relative_path="${CONFIG_FILE#$HOME/}"
-
-    # Search for the line, ignoring comments, matching:
-    # - The full absolute path
-    # - The path starting with ~/
-    # - Or just the specific config filename in a known path
-    grep -v '^[[:space:]]*#' "$hyprland_conf" 2>/dev/null |
-        grep -qE "source[[:space:]]*=[[:space:]]*.*(~/${relative_path}|${CONFIG_FILE}|${config_basename})"
+    grep -v '^[[:space:]]*--' "$hyprland_lua" 2>/dev/null |
+        grep -qE "workspaces[.]lua"
 }
 
 add_source_to_config() {

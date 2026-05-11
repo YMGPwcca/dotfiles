@@ -53,7 +53,7 @@ PanelWindow {
         id: content
 
         anchors.centerIn: parent
-        width: 560
+        width: Math.min(620, root.width - 48)
         height: Math.min(680, root.height - 80)
 
         radius: Config.radiusLarge
@@ -154,12 +154,16 @@ PanelWindow {
                                 action: "Terminal"
                             },
                             {
-                                keys: "Super + D",
+                                keys: "Super + Shift + F",
                                 action: "File Manager"
                             },
                             {
-                                keys: "Super + Z",
+                                keys: "Super + Shift + Z",
                                 action: "Browser"
+                            },
+                            {
+                                keys: "Super + Shift + C",
+                                action: "VSCode"
                             },
                             {
                                 keys: "Super + Space",
@@ -173,8 +177,8 @@ PanelWindow {
                         icon: "󰖯"
                         keybinds: [
                             {
-                                keys: "Super + Q",
-                                action: "Kill window"
+                                keys: "Super + W",
+                                action: "Close focused window"
                             },
                             {
                                 keys: "Super + F",
@@ -182,7 +186,7 @@ PanelWindow {
                             },
                             {
                                 keys: "Super + Shift + F",
-                                action: "Fullscreen (pinned)"
+                                action: "Fullscreen maximized"
                             },
                             {
                                 keys: "Super + Shift + Space",
@@ -207,6 +211,14 @@ PanelWindow {
                             {
                                 keys: "Super + Alt + H J K L",
                                 action: "Resize window"
+                            },
+                            {
+                                keys: "Super + Left Click",
+                                action: "Drag window"
+                            },
+                            {
+                                keys: "Super + Right Click",
+                                action: "Resize window"
                             }
                         ]
                     }
@@ -222,26 +234,6 @@ PanelWindow {
                             {
                                 keys: "Super + Shift + 1-0",
                                 action: "Move to workspace"
-                            },
-                            {
-                                keys: "Super + Ctrl + H / L",
-                                action: "Prev / Next workspace"
-                            },
-                            {
-                                keys: "Super + Ctrl + Shift + H / L",
-                                action: "Move window prev / next"
-                            },
-                            {
-                                keys: "Super + W",
-                                action: "WhatsApp workspace"
-                            },
-                            {
-                                keys: "Super + M",
-                                action: "Spotify workspace"
-                            },
-                            {
-                                keys: "Super + S",
-                                action: "Magic workspace"
                             }
                         ]
                     }
@@ -263,7 +255,7 @@ PanelWindow {
                                 action: "Keybinds (this window)"
                             },
                             {
-                                keys: "Super + End",
+                                keys: "Super + Escape",
                                 action: "Power Menu"
                             },
                             {
@@ -370,7 +362,7 @@ PanelWindow {
                         font.pixelSize: Config.fontSizeNormal
                         font.bold: true
                         color: Config.accentColor
-                        Layout.preferredWidth: 220
+                        Layout.preferredWidth: 250
                         elide: Text.ElideRight
                     }
 

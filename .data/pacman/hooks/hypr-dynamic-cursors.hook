@@ -6,7 +6,6 @@ Target = hyprland
 Target = hyprutils
 Target = hyprgraphics
 Target = hyprcursor
-Target = hyprlang
 Target = aquamarine
 
 [Action]
