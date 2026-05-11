@@ -68,12 +68,12 @@ On first install, templates from `.data/` are copied to generate machine-specifi
 
 Configuration templates are in `.data/hyprland/templates/`:
 
-- `monitors.conf` - Generic monitor configuration
-- `workspaces.conf` - Workspace mapping
-- `extra_environment.conf` - Local environment variables
-- `extra_environment_nvidia.conf` - NVIDIA variables
-- `autostart.conf` - Local autostart
-- `extra_keybinds.conf` - Local keybinds
+- `monitors.lua` - Generic monitor configuration
+- `workspaces.lua` - Workspace mapping
+- `extra_environment.lua` - Local environment variables
+- `extra_environment_nvidia.lua` - NVIDIA variables
+- `autostart.lua` - Local autostart
+- `extra_keybinds.lua` - Local keybinds
 
 NVIDIA UWSM templates are in `.data/hyprland/uwsm/`:
 

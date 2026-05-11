@@ -1,0 +1,11 @@
+-- =============================================================================
+-- Local Keybinds - Template
+-- =============================================================================
+-- Machine-specific keybinds.
+-- This file is loaded by hyprland.lua.
+-- =============================================================================
+
+-- Add local keybinds here.
+-- Example:
+-- local vars = require("variables")
+-- hl.bind(vars.main_mod .. " + SHIFT + D", hl.dsp.exec_cmd("discord"))
