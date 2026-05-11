@@ -1,9 +1,2 @@
-local plugin_path = "/home/pwcca/.local/share/hyprplugins/hypr-dynamic-cursors/out/dynamic-cursors.so"
-
-local file = io.open(plugin_path, "r")
-if file ~= nil then
-    file:close()
-    pcall(function()
-        hl.plugin.load(plugin_path)
-    end)
-end
+-- Disabled for Hyprland 0.55: the locally built dynamic-cursors plugin fails
+-- to load with an undefined symbol until it is rebuilt for the current ABI.
