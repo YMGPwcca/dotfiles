@@ -1,25 +1,7 @@
--- Reads the current theme name from ~/.config/nvim/current-theme.txt
-local function get_colorscheme()
-	local path = vim.fn.expand("~/.config/nvim/current-theme.txt")
-	local file = io.open(path, "r")
-	if file then
-		local name = file:read("*l")
-		file:close()
-		if name and name ~= "" then
-			return vim.trim(name)
-		end
-	end
-	return "tokyonight"
-end
-
--- ============================================================================
--- THEME PLUGINS
--- ============================================================================
-
 return {
 	{
 		"folke/tokyonight.nvim",
-		lazy = true,
+		lazy = false,
 		priority = 1000,
 		opts = {
 			style = "night",
@@ -182,48 +164,9 @@ return {
 				hl.SnacksDashboardSpecial = { fg = p.string }
 			end,
 		},
-	},
-	{
-		"catppuccin/nvim",
-		name = "catppuccin",
-		lazy = true,
-		priority = 1000,
-		opts = { flavour = "mocha" },
-	},
-	{
-		"ellisonleao/gruvbox.nvim",
-		lazy = true,
-		priority = 1000,
-		opts = { contrast = "hard" },
-	},
-	{
-		"Mofiqul/dracula.nvim",
-		lazy = true,
-		priority = 1000,
-	},
-	{
-		"shaunsingh/nord.nvim",
-		lazy = true,
-		priority = 1000,
-	},
-	{
-		"rose-pine/neovim",
-		name = "rose-pine",
-		lazy = true,
-		priority = 1000,
-		opts = { variant = "main" },
-	},
-	{
-		dir = vim.fn.stdpath("config"),
-		name = "theme-loader",
-		lazy = false,
-		priority = 999,
-		config = function()
-			local scheme = get_colorscheme()
-			local ok, _ = pcall(vim.cmd.colorscheme, scheme)
-			if not ok then
-				vim.cmd.colorscheme("tokyonight")
-			end
+		config = function(_, opts)
+			require("tokyonight").setup(opts)
+			vim.cmd.colorscheme("tokyonight")
 		end,
 	},
 }

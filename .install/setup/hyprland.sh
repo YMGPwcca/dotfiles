@@ -38,7 +38,6 @@ create_directories() {
     mkdir -p "$HYPR_LOCAL_DIR"
     mkdir -p "$UWSM_ENV_DIR"
     mkdir -p "$QUICKSHELL_CONFIG_DIR"
-    mkdir -p "$HOME/.local/themes"
     mkdir -p "$HOME/Pictures/Screenshots"
 }
 
@@ -275,13 +274,7 @@ setup_wallpapers() {
             # Copy root-level wallpapers
             find "$WALLPAPERS_DATA" -maxdepth 1 -type f \( -name '*.png' -o -name '*.jpg' -o -name '*.jpeg' -o -name '*.webp' -o -name '*.gif' \) -exec cp -n {} "$WALLPAPERS_DIR/" \;
 
-            # Copy theme wallpaper folders (themes/{name}/*.jpg)
-            if [[ -d "$WALLPAPERS_DATA/themes" ]]; then
-                cp -rn "$WALLPAPERS_DATA/themes" "$WALLPAPERS_DIR/"
-                log_info "  Initial wallpapers + theme folders copied from .data/wallpapers/"
-            else
-                log_info "  Initial wallpapers copied from .data/wallpapers/"
-            fi
+            log_info "  Initial wallpapers copied from .data/wallpapers/"
         else
             log_warn "  Initial wallpapers directory not found: $WALLPAPERS_DATA"
         fi
@@ -289,34 +282,6 @@ setup_wallpapers() {
         log_warn "  Skipping (wallpapers already exist): $WALLPAPERS_DIR"
     fi
 
-}
-
-# =============================================================================
-# Configure themes
-# =============================================================================
-setup_themes() {
-    echo ""
-    log_info "Configuring themes..."
-
-    local THEMES_DIR="$HOME/.local/themes"
-    local THEMES_DATA="$DOTFILES_DIR/.data/themes"
-
-    mkdir -p "$THEMES_DIR"
-
-    # Copy theme JSON files if directory is empty
-    local file_count
-    file_count=$(find "$THEMES_DIR" -maxdepth 1 -name '*.json' 2>/dev/null | wc -l)
-
-    if [[ "$file_count" -eq 0 ]]; then
-        if [[ -d "$THEMES_DATA" ]]; then
-            cp -n "$THEMES_DATA"/*.json "$THEMES_DIR/" 2>/dev/null
-            log_info "  Theme definitions copied from .data/themes/"
-        else
-            log_warn "  Theme data directory not found: $THEMES_DATA"
-        fi
-    else
-        log_warn "  Skipping (themes already exist): $THEMES_DIR"
-    fi
 }
 
 # =============================================================================
@@ -335,7 +300,6 @@ run_hyprland_main() {
     setup_local_configs
     setup_quickshell
     setup_wallpapers
-    setup_themes
 
     if ask_nvidia; then
         setup_nvidia
@@ -358,7 +322,6 @@ run_hyprland_main() {
     echo "  - ~/.config/uwsm/env.d/hyprland_hardware.sh"
     echo "  - ~/.config/quickshell/state.json"
     echo "  - ~/.local/wallpapers/ (wallpapers)"
-    echo "  - ~/.local/themes/ (theme definitions)"
     echo ""
     log_info "Use 'nwg-displays' to configure your monitors."
     log_info "workspace-manager.sh will regenerate workspaces.lua automatically."

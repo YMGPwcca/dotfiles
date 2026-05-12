@@ -1,8 +1,8 @@
 #!/bin/bash
 # =============================================================================
-# Theming Packages - Qt/GTK Theming
+# Theming Packages - Static GTK/Qt Appearance
 # =============================================================================
-# Packages for Qt and GTK theme configuration
+# Packages for the fixed Tokyo Night GTK/Qt appearance
 # =============================================================================
 
 THEMING_PACKAGES=(
@@ -14,9 +14,6 @@ THEMING_PACKAGES=(
     "breeze5"       # Breeze QT5 theme
     "breeze-gtk"    # Breeze GTK theme
     "adw-gtk-theme" # adw-gtk3 theme (GTK3 port of libadwaita, supports @define-color)
-
-    # Material You color generation
-    "matugen" # Generate Material You colors from wallpapers
 )
 
 # AUR packages
@@ -27,7 +24,7 @@ THEMING_AUR_PACKAGES=(
 )
 
 # =============================================================================
-# Setup - Apply theme settings
+# Setup - Apply static theme settings
 # =============================================================================
 setup_theming() {
     echo "[>>] Applying GTK theme settings..."
@@ -39,10 +36,7 @@ setup_theming() {
     gsettings set org.gnome.desktop.interface color-scheme "prefer-dark"
     echo "[OK] GTK theme applied!"
 
-    echo "[>>] Setting up matugen..."
-    mkdir -p "$HOME/.cache/matugen"
+    echo "[>>] Ensuring static Qt color scheme directory exists..."
     mkdir -p "$HOME/.local/share/color-schemes"
-    mkdir -p "$HOME/.config/matugen"
-    ln -sf "$HOME/.pwcca-dots/.data/matugen/config.toml" "$HOME/.config/matugen/config.toml"
-    echo "[OK] Matugen configured!"
+    echo "[OK] Static Tokyo Night theming configured!"
 }

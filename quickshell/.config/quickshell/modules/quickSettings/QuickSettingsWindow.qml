@@ -66,11 +66,5 @@ QsPopupWindow {
             onBackRequested: pageStack.currentIndex = 0
         }
 
-        // ==========================
-        // PAGE 5: THEME
-        // ==========================
-        ThemePage {
-            onBackRequested: pageStack.currentIndex = 0
-        }
     }
 }

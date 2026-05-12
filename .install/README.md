@@ -14,7 +14,7 @@ Organized installation scripts for the dotfiles.
 │   ├── utils.sh        # Clipboard, audio, bluetooth
 │   ├── fonts.sh        # Nerd Fonts, cursors, icons
 │   ├── quickshell.sh   # QuickShell
-│   ├── theming.sh      # Qt/GTK theming
+│   ├── theming.sh      # Static Qt/GTK appearance
 │   └── nvidia.sh       # NVIDIA drivers (optional)
 └── setup/              # Configuration scripts
     ├── stow.sh         # Creates symlinks with GNU Stow
@@ -52,14 +52,14 @@ Organized installation scripts for the dotfiles.
 
 | Category   | Description                                    |
 | ---------- | ---------------------------------------------- |
-| core       | Hyprland, UWSM, swww, portal (ESSENTIAL)      |
+| core       | Hyprland, UWSM, awww, portal (ESSENTIAL)      |
 | terminal   | Kitty, Zsh, Tmux, Fastfetch                    |
 | editor     | Neovim + development tools                     |
 | apps       | Dolphin, Zen Browser, Spotify, mpv              |
 | utils      | Clipboard, audio, bluetooth, brightnessctl     |
 | fonts      | Nerd Fonts, Bibata cursor, Tela icons          |
 | quickshell | QuickShell bar/shell + Qt6                     |
-| theming    | Qt5ct, Qt6ct, Kvantum, nwg-look                |
+| theming    | Qt5ct, Qt6ct, GTK/Qt Tokyo Night appearance    |
 | nvidia     | NVIDIA drivers (install only if needed)        |
 
 ## Templates and Data
@@ -101,7 +101,7 @@ The `stow.sh` script creates symlinks for:
 | nvim       | ~/.config/nvim        |
 | zsh        | ~/.zshrc, ~/.p10k.zsh |
 | tmux       | ~/.tmux.conf          |
-| local      | ~/.local/scripts      |
+| local      | ~/.local/scripts, ~/.local/wallpapers |
 | fastfetch  | ~/.config/fastfetch   |
-| theming    | ~/.config/gtk-3.0, gtk-4.0, qt5ct, qt6ct |
+| theming    | ~/.config/gtk-3.0, gtk-4.0, qt5ct, qt6ct, ~/.local/share/color-schemes/tokyonight.colors |
 | kde        | ~/.config/kdeglobals  |

@@ -14,16 +14,8 @@ hyprland/.config/uwsm/env.d/*
 local/.local/wallpapers/*
 !local/.local/wallpapers/.gitkeep
 
-# Local themes (copied from .data/themes/ on installation)
-local/.local/themes/*
-!local/.local/themes/.gitkeep
-
 # Monitor and workspace configs (machine-specific)
 # These files are created by the installation script
 # and can be edited by the user or by nwg-displays/workspace-manager
 hyprland/.config/hypr/monitors.lua
 hyprland/.config/hypr/workspaces.lua
-
-# GTK colors.css (generated at runtime by ThemeService/matugen)
-theming/.config/gtk-3.0/colors.css
-theming/.config/gtk-4.0/colors.css

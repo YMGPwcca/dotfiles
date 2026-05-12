@@ -1,6 +1,6 @@
 # Dotfiles
 
-> Arch Linux dotfiles managed with [GNU Stow](https://www.gnu.org/software/stow/), featuring a Hyprland (Wayland) desktop environment with a custom QuickShell bar and a unified theme system that applies across the entire setup.
+> Arch Linux dotfiles managed with [GNU Stow](https://www.gnu.org/software/stow/), featuring a Hyprland (Wayland) desktop environment with a custom QuickShell bar and a fixed Tokyo Night appearance.
 
 This is a fork of [lyne-dots](https://github.com/caioax/lyne-dots). Heavily modified for personal use.
 
@@ -12,66 +12,33 @@ This is a fork of [lyne-dots](https://github.com/caioax/lyne-dots). Heavily modi
 
 ![Tokyo Night](./.data/assets/tokyonight.png)
 
-### Catppuccin Mocha
-
-![Catppuccin Mocha](./.data/assets/catppuccin-mocha.png)
-
-### Dracula
-
-![Dracula](./.data/assets/dracula.png)
-
-### Gruvbox Dark
-
-![Gruvbox Dark](./.data/assets/gruvbox-dark.png)
-
-### Nord
-
-![Nord](./.data/assets/nord.png)
-
-### Rose Pine
-
-![Rose Pine](./.data/assets/rosepine.png)
-
 ## ✨ Features
 
 - 🪟 **Hyprland** - Tiling Wayland compositor with modular configuration
 - 🖥️ **QuickShell** - Custom QML-based status bar, launcher, notifications, quick settings, and power menu
-- 🎨 **Dynamic Theming** - 11 themes (6 dark + 5 light variants) applied live across the entire system, plus a **Material You** auto mode that generates colors from your wallpaper
-- 🖼️ **Wallpaper Picker** - Built-in wallpaper manager with search, favorites, and per-theme wallpaper folders
+- 🎨 **Tokyo Night** - One fixed dark theme shared by QuickShell, Kitty, Neovim, Hyprland, GTK, and Qt
+- 🖼️ **Wallpaper Picker** - Built-in wallpaper manager with search and favorites
 - 📸 **Screenshot Tool** - Multi-monitor region/fullscreen capture with annotation overlay
 - ✏️ **Neovim** - Lua-based configuration with LSP, Telescope, Smart Splits, and lazy.nvim
 - 📟 **Tmux** - Terminal multiplexer with seamless Neovim navigation (Smart Splits)
-- 🐱 **Kitty** - GPU-accelerated terminal with dynamic theme switching
+- 🐱 **Kitty** - GPU-accelerated terminal configured for Tokyo Night
 - ⚡ **Zsh** - Oh-My-Zsh with autosuggestions, syntax highlighting, vi-mode, and Powerlevel10k
 - 🔧 **CLI** - Built-in command-line tool for managing the dotfiles
 
-### 🎨 Theme System
+### 🎨 Theme
 
-Switching themes from the Quick Settings panel or CLI applies colors instantly to:
+Tokyo Night is the only configured theme. Its colors are defined statically for:
 
 | Component                                 | What changes                                |
 | ----------------------------------------- | ------------------------------------------- |
 | QuickShell (bar, launcher, notifications) | All UI colors                               |
 | Kitty                                     | Terminal colors, cursor, tabs, borders      |
-| Neovim                                    | Colorscheme (sent to all running instances) |
+| Neovim                                    | Tokyo Night colorscheme                     |
 | Hyprland                                  | Active/inactive border colors, shadow       |
 | GTK / Qt                                  | Application theme colors                    |
-| Wallpaper                                 | Theme-linked wallpaper applied via awww     |
+| Wallpaper                                 | Independent wallpaper selection via awww     |
 
-No restarts required.
-
-**Available presets:**
-
-| Dark             | Light            |
-| ---------------- | ---------------- |
-| Tokyo Night      | Tokyo Night Day  |
-| Catppuccin Mocha | Catppuccin Latte |
-| Dracula          | —                |
-| Gruvbox Dark     | Gruvbox Light    |
-| Nord             | Nord Light       |
-| Rose Pine        | Rose Pine Dawn   |
-
-**Material You mode** generates a color palette from your current wallpaper using [matugen](https://github.com/InioX/matugen), supporting both dark and light schemes. Enable it from Quick Settings or with `pwcca theme auto`.
+Theme switching, light variants, and Material You color generation are intentionally removed.
 
 ---
 
@@ -102,7 +69,7 @@ The installer is interactive and lets you pick which package categories to insta
 | `utils`      | Clipboard, playerctl, audio, etc   |
 | `fonts`      | Nerd Fonts, cursors, icons         |
 | `quickshell` | QuickShell bar/shell               |
-| `theming`    | Qt/GTK theming                     |
+| `theming`    | Static Qt/GTK Tokyo Night appearance |
 | `nvidia`     | NVIDIA drivers (only if needed)    |
 
 ### Advanced Options
@@ -131,7 +98,6 @@ pwcca <command> [args...]
 
 | Command   | Description                                         |
 | --------- | --------------------------------------------------- |
-| `theme`   | Manage themes (set, list, auto, scheme)             |
 | `state`   | Manage `state.json` (edit, sync, rebuild)           |
 | `migrate` | Manage migrations (run, list, done)                 |
 | `update`  | Pull latest changes, sync state, and run migrations |
@@ -144,21 +110,6 @@ Run `pwcca <command> --help` for details and subcommands.
 ### Examples
 
 ```bash
-# Show current theme info
-pwcca theme
-
-# List all available themes (dark and light)
-pwcca theme list
-
-# Switch to a specific theme preset
-pwcca theme set catppuccin-mocha
-
-# Switch to Material You auto mode (colors from wallpaper)
-pwcca theme auto
-
-# Toggle between dark and light scheme
-pwcca theme scheme light
-
 # Pull the latest changes and apply migrations
 pwcca update
 
@@ -247,20 +198,20 @@ Each top-level directory is a [GNU Stow](https://www.gnu.org/software/stow/) pac
 | `quickshell/` | QML shell: bar, launcher, notifications, quick settings                              |
 | `nvim/`       | Neovim config with lazy.nvim plugin manager                                          |
 | `tmux/`       | Tmux config with TPM and Smart Splits integration                                    |
-| `kitty/`      | Kitty terminal config with dynamic themes                                            |
+| `kitty/`      | Kitty terminal config with Tokyo Night colors                                        |
 | `zsh/`        | Zsh config with Oh-My-Zsh and Powerlevel10k                                          |
-| `local/`      | Custom scripts, wallpapers (`~/.local/wallpapers/`), and themes (`~/.local/themes/`) |
+| `local/`      | Custom scripts and wallpapers (`~/.local/wallpapers/`)                              |
 | `fastfetch/`  | System info display config                                                           |
-| `theming/`    | GTK3/4 and Qt5/6 theme settings                                                      |
+| `theming/`    | Static GTK3/4 and Qt5/6 Tokyo Night settings                                         |
 | `kde/`        | KDE Plasma global settings (colors, icons, fonts)                                    |
 
 ### Other Directories
 
-| Directory          | Description                                       |
-| ------------------ | ------------------------------------------------- |
-| `.install/`        | Installation scripts and package lists            |
-| `.data/`           | Templates, default themes, and default wallpapers |
-| `.data/pwcca-cli/` | CLI commands, libraries, and migrations           |
+| Directory          | Description                                           |
+| ------------------ | ----------------------------------------------------- |
+| `.install/`        | Installation scripts and package lists                |
+| `.data/`           | Templates, Tokyo Night palette, and default wallpapers |
+| `.data/pwcca-cli/` | CLI commands, libraries, and migrations               |
 
 ---
 
@@ -276,7 +227,6 @@ Each top-level directory is a [GNU Stow](https://www.gnu.org/software/stow/) pac
 | Multiplexer     | Tmux            |
 | Editor          | Neovim          |
 | Wallpaper       | awww            |
-| Auto Theming    | matugen         |
 | File Manager    | Dolphin         |
 | Browser         | Zen Browser     |
 | AUR Helper      | paru            |
@@ -300,12 +250,6 @@ Wallpapers live in `~/.local/wallpapers/` (git-ignored, defaults copied on insta
 
 - **Search** by filename
 - **Favorites** with persistent state
-- **Theme wallpapers** organized in `~/.local/wallpapers/themes/{theme-name}/`
-- Each theme can have multiple wallpapers; the active one is set from the picker and applied automatically on theme switch
-
-### Adding Themes
-
-Themes are JSON files in `~/.local/themes/` (git-ignored, defaults copied from `.data/themes/` on install). Each theme defines colors for the palette, terminal, Hyprland, Neovim, GTK/Qt, and a wallpaper path. Light themes include a `"variant": "light"` field and a `"darkPair"` field linking them to their dark counterpart. To create a new theme, copy an existing one and modify the values.
 
 ---
 

@@ -2,7 +2,7 @@
 # =============================================================================
 # Wallpaper Boot Script
 # =============================================================================
-# Applies the persistent wallpaper on boot using swww.
+# Applies the persistent wallpaper on boot using awww.
 # Reads the wallpaper path from ~/.local/wallpapers/.current
 # =============================================================================
 
@@ -20,7 +20,7 @@ if [[ -z "$WALLPAPER" || ! -f "$WALLPAPER" ]]; then
 fi
 
 if [[ -n "$WALLPAPER" && -f "$WALLPAPER" ]]; then
-    swww img "$WALLPAPER" \
+    awww img "$WALLPAPER" \
         --transition-type grow \
         --transition-duration 1 \
         --transition-fps 60 \

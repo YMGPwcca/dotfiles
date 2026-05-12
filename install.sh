@@ -131,7 +131,7 @@ show_menu() {
     echo "  5) utils               - Clipboard, playerctl, audio, etc"
     echo "  6) fonts               - Nerd Fonts, cursors, icons"
     echo "  7) quickshell          - QuickShell bar/shell"
-    echo "  8) theming             - Qt/GTK theming"
+    echo "  8) theming             - Static Qt/GTK appearance"
     echo "  9) nvidia(developing)  - NVIDIA drivers (only if you have an NVIDIA GPU)"
     echo ""
     echo "  a) ALL                 - Install everything (except nvidia)"
@@ -308,7 +308,7 @@ setup_wallpaper() {
     fi
     # Fallback to default if .current doesn't exist or points to a missing file
     if [[ -z "$WALLPAPER" || ! -f "$WALLPAPER" ]]; then
-        WALLPAPER="$HOME/.local/wallpapers/water.png"
+        WALLPAPER="$HOME/.local/wallpapers/theme-tokyonight.jpg"
     fi
 
     # Check if awww is installed
@@ -476,7 +476,7 @@ full_install() {
         setup_wallpaper
     fi
 
-    # Apply GTK theme
+    # Apply static GTK/Qt appearance
     if [[ " ${CATEGORIES[*]} " =~ " theming " ]]; then
         setup_theming
     fi

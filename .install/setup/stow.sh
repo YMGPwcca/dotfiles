@@ -32,7 +32,7 @@ STOW_DIRS=(
     "local"         # Local scripts
     "fastfetch"     # System info
     "kde"           # KDE globals (terminal, fonts, icons)
-    "theming"       # Qt5/Qt6/GTK theme configuration
+    "theming"       # Static Qt5/Qt6/GTK appearance
 )
 
 # =============================================================================
@@ -75,13 +75,13 @@ get_stow_targets() {
             targets+=("$HOME/.tmux.conf")
             ;;
         "local")
-            targets+=("$HOME/.local/scripts" "$HOME/.local/wallpapers" "$HOME/.local/themes")
+            targets+=("$HOME/.local/scripts" "$HOME/.local/wallpapers")
             ;;
         "kde")
             targets+=("$HOME/.config/kdeglobals")
             ;;
         "theming")
-            targets+=("$HOME/.config/gtk-3.0" "$HOME/.config/gtk-4.0" "$HOME/.config/qt5ct" "$HOME/.config/qt6ct")
+            targets+=("$HOME/.config/gtk-3.0" "$HOME/.config/gtk-4.0" "$HOME/.config/qt5ct" "$HOME/.config/qt6ct" "$HOME/.local/share/color-schemes/tokyonight.colors")
             ;;
         *)
             targets+=("$HOME/.config/${dir}")

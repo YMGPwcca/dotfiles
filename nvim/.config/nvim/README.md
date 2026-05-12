@@ -112,7 +112,6 @@ Shortcuts available when a code file is open.
 ├── lazy-lock.json      # Locked versions (Don't touch)
 ├── lua/
 │   ├── config/         # Options, Keymaps, Commands
-│   ├── mytheme/        # Your local theme (Palette/Highlights)
 │   └── plugins/        # Modules (LSP, Snacks, CMP, etc)
 ```
 
