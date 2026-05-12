@@ -35,6 +35,7 @@ source("appearance")
 source("input")
 source("dynamic-cursors")
 source("rules")
+source("solo-fullscreen")
 source("keybinds")
 
 source_file_if_exists(config_dir .. "/monitors.lua")
