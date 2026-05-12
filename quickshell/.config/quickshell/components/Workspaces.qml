@@ -128,6 +128,18 @@ Item {
 
     Component.onCompleted: updateOccupiedWorkspaces()
 
+    function luaString(value) {
+        return "\"" + String(value).replace(/\\/g, "\\\\").replace(/"/g, "\\\"") + "\"";
+    }
+
+    function switchWorkspace(workspaceId) {
+        Hyprland.dispatch("hl.dsp.focus({ workspace = " + workspaceId + " })");
+    }
+
+    function toggleSpecialWorkspace(name) {
+        Hyprland.dispatch("hl.dsp.workspace.toggle_special(" + luaString(name) + ")");
+    }
+
     Timer {
         id: occupiedUpdateTimer
         interval: 10
@@ -236,7 +248,7 @@ Item {
         TapHandler {
             onTapped: {
                 if (root.specialWorkspaceName)
-                    Hyprland.dispatch("togglespecialworkspace " + root.specialWorkspaceName);
+                    root.toggleSpecialWorkspace(root.specialWorkspaceName);
             }
         }
         HoverHandler {
@@ -315,7 +327,7 @@ Item {
                     TapHandler {
                         onTapped: {
                             if (!workspaceItem.isActive)
-                                Hyprland.dispatch("workspace " + workspaceItem.workspaceId);
+                                root.switchWorkspace(workspaceItem.workspaceId);
                         }
                     }
 
