@@ -1,2 +1,0 @@
--- Disabled for Hyprland 0.55: the locally built dynamic-cursors plugin fails
--- to load with an undefined symbol until it is rebuilt for the current ABI.

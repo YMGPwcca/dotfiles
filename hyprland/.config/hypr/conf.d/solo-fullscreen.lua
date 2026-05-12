@@ -1,5 +1,8 @@
 local reconcile_timer = nil
+local fullscreen_event_timer = nil
 local reconciling = false
+local scripted_fullscreen_events = 0
+local manually_windowed = {}
 
 local function is_manageable_window(window)
     return window ~= nil
@@ -8,7 +11,43 @@ local function is_manageable_window(window)
         and not window.pinned
 end
 
+local function window_key(window)
+    if window == nil then
+        return nil
+    end
+
+    if window.address ~= nil and window.address ~= "" then
+        return window.address
+    end
+
+    if window.stable_id ~= nil then
+        return tostring(window.stable_id)
+    end
+
+    return tostring(window)
+end
+
+local function solo_workspace_window(workspace)
+    if workspace == nil then
+        return nil
+    end
+
+    local windows = {}
+    for _, window in ipairs(workspace:get_windows()) do
+        if is_manageable_window(window) then
+            table.insert(windows, window)
+        end
+    end
+
+    if #windows ~= 1 then
+        return nil
+    end
+
+    return windows[1]
+end
+
 local function set_fullscreen_state(window, internal, client)
+    scripted_fullscreen_events = scripted_fullscreen_events + 1
     hl.dispatch(hl.dsp.window.fullscreen_state({
         internal = internal,
         client = client,
@@ -31,6 +70,11 @@ local function reconcile_workspace(workspace)
 
     if #windows == 1 then
         local window = windows[1]
+        local key = window_key(window)
+        if key ~= nil and manually_windowed[key] then
+            return
+        end
+
         if not window.floating and (window.fullscreen ~= 2 or window.fullscreen_client ~= 0) then
             set_fullscreen_state(window, 2, 0)
         elseif window.floating and window.fullscreen ~= 0 then
@@ -73,20 +117,79 @@ local function schedule_reconcile()
     })
 end
 
+local function track_manual_fullscreen_toggle()
+    local active_window = hl.get_active_window()
+    local solo_window = nil
+
+    if active_window ~= nil and active_window.workspace ~= nil then
+        solo_window = solo_workspace_window(active_window.workspace)
+    end
+
+    if solo_window == nil then
+        local active_workspace = hl.get_active_workspace()
+        solo_window = solo_workspace_window(active_workspace)
+    end
+
+    if solo_window ~= nil then
+        local key = window_key(solo_window)
+        if key ~= nil then
+            if not solo_window.floating and solo_window.fullscreen == 0 then
+                manually_windowed[key] = true
+            else
+                manually_windowed[key] = nil
+            end
+        end
+    end
+
+    schedule_reconcile()
+end
+
+local function schedule_fullscreen_event_tracking()
+    if scripted_fullscreen_events > 0 then
+        scripted_fullscreen_events = scripted_fullscreen_events - 1
+        schedule_reconcile()
+        return
+    end
+
+    if fullscreen_event_timer ~= nil then
+        fullscreen_event_timer:set_enabled(false)
+        fullscreen_event_timer = nil
+    end
+
+    fullscreen_event_timer = hl.timer(function()
+        fullscreen_event_timer = nil
+        track_manual_fullscreen_toggle()
+    end, {
+        timeout = 80,
+        type = "oneshot",
+    })
+end
+
+local function reset_manual_windowed()
+    manually_windowed = {}
+    schedule_reconcile()
+end
+
 for _, event in ipairs({
     "hyprland.start",
     "config.reloaded",
     "window.open",
     "window.close",
     "window.destroy",
-    "window.fullscreen",
     "window.move_to_workspace",
     "window.pin",
+}) do
+    hl.on(event, reset_manual_windowed)
+end
+
+for _, event in ipairs({
     "workspace.active",
     "workspace.created",
     "workspace.move_to_monitor",
 }) do
     hl.on(event, schedule_reconcile)
 end
+
+hl.on("window.fullscreen", schedule_fullscreen_event_tracking)
 
 schedule_reconcile()

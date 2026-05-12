@@ -55,11 +55,6 @@ Item {
 
     // --- Special Workspaces Config ---
     readonly property var specialWorkspaces: ({
-            "whatsapp": {
-                icon: "󰖣",
-                color: Config.successColor,
-                name: "WhatsApp"
-            },
             "spotify": {
                 icon: "󰓇",
                 color: Config.accentColor,

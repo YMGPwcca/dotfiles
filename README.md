@@ -149,7 +149,6 @@ pwcca state --help
 | ------------------------- | ------------------------------- |
 | `Super + W`               | Close focused window            |
 | `Super + F`               | Fullscreen                      |
-| `Super + Shift + F`       | Fullscreen maximized            |
 | `Super + Shift + Space`   | Toggle floating                 |
 | `Super + Tab`             | Toggle split                    |
 | `Super + P`               | Pseudo tile                     |
@@ -175,7 +174,6 @@ pwcca state --help
 | `Super + V`         | Clipboard History |
 | `Super + Escape`    | Power Menu        |
 | `Print`             | Screenshot        |
-| `Super + = / -`     | Zoom in / out     |
 | `Super + Shift + R` | Reload QuickShell |
 
 ### Media

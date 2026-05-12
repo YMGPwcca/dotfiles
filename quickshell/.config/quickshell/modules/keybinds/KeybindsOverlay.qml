@@ -185,10 +185,6 @@ PanelWindow {
                                 action: "Fullscreen"
                             },
                             {
-                                keys: "Super + Shift + F",
-                                action: "Fullscreen maximized"
-                            },
-                            {
                                 keys: "Super + Shift + Space",
                                 action: "Toggle floating"
                             },
@@ -261,10 +257,6 @@ PanelWindow {
                             {
                                 keys: "Print",
                                 action: "Screenshot"
-                            },
-                            {
-                                keys: "Super + =  /  -",
-                                action: "Zoom in / out"
                             },
                             {
                                 keys: "Super + Shift + R",

@@ -1,4 +1,4 @@
-local home = os.getenv("HOME") or "/home/pwcca"
+local home = os.getenv("HOME") or error("HOME is not set")
 
 hl.env("ELECTRON_OZONE_PLATFORM_HINT", "auto")
 hl.env("AQ_FORCE_LINEAR_BLIT", "0")

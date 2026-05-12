@@ -1,4 +1,4 @@
-local home = os.getenv("HOME") or "/home/pwcca"
+local home = os.getenv("HOME") or error("HOME is not set")
 
 hl.on("hyprland.start", function()
     hl.exec_cmd("quickshell")

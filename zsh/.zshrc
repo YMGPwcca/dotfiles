@@ -77,10 +77,8 @@ all-update() {
     echo -e "\e[1;32m:: All updates complete!\e[0m"
 }
 
-export PATH=$PATH:/home/caio/.spicetify
-
 # bun completions
-[ -s "/home/pwcca/.bun/_bun" ] && source "/home/pwcca/.bun/_bun"
+[ -s "$HOME/.bun/_bun" ] && source "$HOME/.bun/_bun"
 
 # bun
 export BUN_INSTALL="$HOME/.bun"

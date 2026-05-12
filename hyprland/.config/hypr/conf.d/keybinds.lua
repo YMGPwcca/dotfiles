@@ -1,8 +1,6 @@
 local vars = require("variables")
 
 local mod = vars.main_mod
-local script_path = vars.script_path
-local zoom = script_path .. "/Zoom/run.sh"
 
 local function bind(keys, dispatcher, opts)
     hl.bind(keys, dispatcher, opts)
@@ -51,20 +49,16 @@ local function move_to_workspace(slot)
     end
 end
 
-bind(mod .. " + Return", exec(vars.terminal))
-bind(mod .. " + SHIFT + F", exec(vars.file_manager))
-bind(mod .. " + SHIFT + Z", exec(vars.browser))
-bind(mod .. " + SHIFT + C", exec("code"))
+bind(mod .. " + Return", exec("uwsm-app -- " .. vars.terminal))
+bind(mod .. " + SHIFT + F", exec("uwsm-app -- " .. vars.file_manager))
+bind(mod .. " + SHIFT + Z", exec("uwsm-app -- " .. vars.browser))
+bind(mod .. " + SHIFT + C", exec("uwsm-app -- code"))
 
 bind(mod .. " + W", hl.dsp.window.close())
 bind(mod .. " + SHIFT + Space", hl.dsp.window.float())
 bind(mod .. " + P", hl.dsp.window.pseudo())
-bind(mod .. " + SHIFT + F", hl.dsp.window.fullscreen({ mode = "maximized" }))
 bind(mod .. " + F", hl.dsp.window.fullscreen())
 bind(mod .. " + Tab", hl.dsp.layout("togglesplit"))
-
-bind(mod .. " + equal", exec(zoom .. " in"))
-bind(mod .. " + minus", exec(zoom .. " out"))
 
 bind(mod .. " + V", hl.dsp.global("quickshell:clipboard_history"))
 

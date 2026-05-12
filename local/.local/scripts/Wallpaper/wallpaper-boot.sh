@@ -14,6 +14,12 @@ if [[ -f "$CURRENT_FILE" ]]; then
     WALLPAPER="$(cat "$CURRENT_FILE")"
 fi
 
+case "${WALLPAPER:-}" in
+    "~/"*) WALLPAPER="$HOME/${WALLPAPER#~/}" ;;
+    /* | "") ;;
+    *) WALLPAPER="$WALLPAPER_DIR/$WALLPAPER" ;;
+esac
+
 # Fallback: if file doesn't exist or the referenced wallpaper doesn't exist
 if [[ -z "$WALLPAPER" || ! -f "$WALLPAPER" ]]; then
     WALLPAPER="$(find "$WALLPAPER_DIR" -maxdepth 1 -type f \( -name '*.png' -o -name '*.jpg' -o -name '*.jpeg' -o -name '*.webp' \) | head -1)"

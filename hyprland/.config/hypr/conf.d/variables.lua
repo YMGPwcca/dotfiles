@@ -1,10 +1,9 @@
-local home = os.getenv("HOME") or "/home/pwcca"
+local home = os.getenv("HOME") or error("HOME is not set")
 
 local vars = {
     terminal = "kitty",
     file_manager = "dolphin",
     browser = "zen-browser",
-    script_path = home .. "/.local/scripts",
     main_mod = "SUPER",
 }
 

@@ -18,7 +18,7 @@ Singleton {
     }
 
     property bool pickerVisible: false
-    property string currentWallpaper: getState("wallpaper.current", "")
+    property string currentWallpaper: expandWallpaperPath(getState("wallpaper.current", ""))
     property var wallpapers: []
     property var selectedWallpapers: []
     property bool confirmDelete: false
@@ -28,6 +28,7 @@ Singleton {
     property var favorites: getState("wallpaper.favorites", [])
 
     readonly property string wallpaperDir: Quickshell.env("HOME") + "/.local/wallpapers"
+    readonly property string dotfilesWallpaperDir: StateService.dotfilesPath + "/local/.local/wallpapers"
     readonly property string portalFilePickerScriptPath: Qt.resolvedUrl("../scripts/portal-file-picker.py").toString().replace("file://", "")
     readonly property int selectedCount: selectedWallpapers.length
 
@@ -53,7 +54,7 @@ Singleton {
         target: StateService
 
         function onStateLoaded() {
-            root.currentWallpaper = getState("wallpaper.current", "");
+            root.currentWallpaper = root.expandWallpaperPath(getState("wallpaper.current", ""));
             root.favorites = getState("wallpaper.favorites", []);
         }
     }
@@ -63,7 +64,25 @@ Singleton {
     }
 
     function relativePath(path: string): string {
-        return path.replace(wallpaperDir + "/", "");
+        return path.startsWith(wallpaperDir + "/") ? path.slice(wallpaperDir.length + 1) : path;
+    }
+
+    function expandWallpaperPath(path: string): string {
+        if (!path)
+            return "";
+        if (path.startsWith("~/"))
+            return Quickshell.env("HOME") + "/" + path.slice(2);
+        if (path.startsWith("/"))
+            return path;
+        return wallpaperDir + "/" + path;
+    }
+
+    function storedWallpaperPath(path: string): string {
+        if (path.startsWith(wallpaperDir + "/"))
+            return path.slice(wallpaperDir.length + 1);
+        if (path.startsWith(dotfilesWallpaperDir + "/"))
+            return path.slice(dotfilesWallpaperDir.length + 1);
+        return path;
     }
 
     function toggleFavorite(path: string) {
@@ -134,10 +153,12 @@ Singleton {
         setWallpaperProc.command = ["awww", "img", path, "--transition-type", transition, "--transition-duration", duration, "--transition-fps", "60", "--transition-step", "90"];
         setWallpaperProc.running = true;
 
-        currentWallpaper = path;
-        setState("wallpaper.current", path);
+        const storedPath = storedWallpaperPath(path);
 
-        writeCurrentProc.command = ["sh", "-c", "echo '" + path + "' > '" + wallpaperDir + "/.current'"];
+        currentWallpaper = path;
+        setState("wallpaper.current", storedPath);
+
+        writeCurrentProc.command = ["bash", "-c", "printf '%s\\n' \"$1\" > \"$2\"", "bash", storedPath, wallpaperDir + "/.current"];
         writeCurrentProc.running = true;
 
         hide();
@@ -256,7 +277,7 @@ Singleton {
                 const match = data.match(/image:\s*(.+)/);
                 if (match) {
                     root.currentWallpaper = match[1].trim();
-                    root.setState("wallpaper.current", root.currentWallpaper);
+                    root.setState("wallpaper.current", root.storedWallpaperPath(root.currentWallpaper));
                 }
             }
         }

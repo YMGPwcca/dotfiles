@@ -21,6 +21,7 @@ export XDG_MENU_PREFIX=arch-
 # Visual and backend settings for graphical interfaces
 # ------------------------------------------------------------------------------
 # GTK: Prioritizes Wayland, then X11
+export GTK_THEME="adw-gtk3-dark"
 export GDK_BACKEND="wayland,x11,*"
 
 # QT: Settings for Qt6/Qt5
@@ -33,10 +34,18 @@ export QT_WAYLAND_DISABLE_WINDOWDECORATION=1
 # PATH
 # Makes ~/.local/bin available to the entire session (keybinds, scripts, etc)
 # ------------------------------------------------------------------------------
-export PATH="$HOME/.local/bin:$PATH"
+case ":$PATH:" in
+    *":$HOME/.local/bin:"*) ;;
+    *) export PATH="$HOME/.local/bin:$PATH" ;;
+esac
+
+# Keep apps launched through `uwsm-app` on the same environment as apps
+# launched directly by Hyprland keybinds.
+uwsm_finalize_vars="ELECTRON_OZONE_PLATFORM_HINT XDG_CURRENT_DESKTOP XDG_SESSION_TYPE XDG_SESSION_DESKTOP XDG_MENU_PREFIX GTK_THEME GDK_BACKEND QT_QPA_PLATFORM QT_QPA_PLATFORMTHEME QT_AUTO_SCREEN_SCALE_FACTOR QT_WAYLAND_DISABLE_WINDOWDECORATION XCURSOR_THEME XCURSOR_SIZE AQ_FORCE_LINEAR_BLIT HYPRSHOT_DIR PATH"
+export UWSM_FINALIZE_VARNAMES="${UWSM_FINALIZE_VARNAMES:+$UWSM_FINALIZE_VARNAMES }$uwsm_finalize_vars"
+unset uwsm_finalize_vars
 
 # Load local global hardware exports
 if [ -f "$HOME/.config/uwsm/env.d/global_hardware.sh" ]; then
     . "$HOME/.config/uwsm/env.d/global_hardware.sh"
 fi
-
