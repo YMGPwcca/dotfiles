@@ -9,7 +9,8 @@ Singleton {
     id: root
 
     readonly property string statePath: Quickshell.env("HOME") + "/.config/quickshell/state.json"
-    readonly property string defaultsPath: Quickshell.env("HOME") + "/.lyne-dots/.data/quickshell/defaults.json"
+    readonly property string dotfilesPath: Quickshell.env("PWCCA_DOTS_DIR") || Quickshell.env("HOME") + "/.pwcca-dots"
+    readonly property string defaultsPath: dotfilesPath + "/.data/quickshell/defaults.json"
 
     property var state: ({})
     property bool isLoading: true
@@ -18,7 +19,7 @@ Singleton {
 
     Component.onCompleted: loadState()
 
-    // Watch state.json for external changes (e.g. from lyne CLI)
+    // Watch state.json for external changes (e.g. from pwcca CLI)
     FileView {
         id: stateWatcher
         path: root.statePath

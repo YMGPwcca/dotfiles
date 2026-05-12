@@ -32,7 +32,8 @@ Singleton {
     readonly property string gtkColorsPath3: Quickshell.env("HOME") + "/.config/gtk-3.0/colors.css"
     readonly property string gtkColorsPath4: Quickshell.env("HOME") + "/.config/gtk-4.0/colors.css"
     readonly property string qtColorSchemePath: Quickshell.env("HOME") + "/.local/share/color-schemes/generated.colors"
-    readonly property string matugenConfigPath: Quickshell.env("HOME") + "/.lyne-dots/.data/matugen/config.toml"
+    readonly property string dotfilesPath: Quickshell.env("PWCCA_DOTS_DIR") || Quickshell.env("HOME") + "/.pwcca-dots"
+    readonly property string matugenConfigPath: dotfilesPath + "/.data/matugen/config.toml"
     readonly property string matugenCachePath: Quickshell.env("HOME") + "/.cache/matugen"
 
     property string currentThemeName: getState("theme.name", "tokyonight")

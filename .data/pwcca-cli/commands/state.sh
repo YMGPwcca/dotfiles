@@ -6,7 +6,7 @@ local subcmd="${1:-}"
 
 case "$subcmd" in
     -h|--help)
-        echo "Usage: lyne state [subcommand]"
+        echo "Usage: pwcca state [subcommand]"
         echo ""
         echo "Manage the QuickShell state.json configuration file."
         echo ""
@@ -17,7 +17,7 @@ case "$subcmd" in
         ;;
     sync)
         echo ":: Syncing state.json with defaults..."
-        source "$DOTS_DIR/.data/lyne-cli/lib/sync-state.sh"
+        source "$DOTS_DIR/.data/pwcca-cli/lib/sync-state.sh"
         ;;
     rebuild)
         if [[ ! -f "$DEFAULTS_FILE" ]]; then
@@ -50,6 +50,6 @@ case "$subcmd" in
         ;;
     *)
         echo "state: unknown subcommand '$subcmd'"
-        echo "Run 'lyne state --help' for usage information."
+        echo "Run 'pwcca state --help' for usage information."
         ;;
 esac

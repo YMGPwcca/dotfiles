@@ -1,7 +1,7 @@
 # Restart QuickShell detached from the terminal
 
 if [[ "${1:-}" == "-h" || "${1:-}" == "--help" ]]; then
-    echo "Usage: lyne reload"
+    echo "Usage: pwcca reload"
     echo ""
     echo "Kill and restart QuickShell detached from the terminal."
     return 0

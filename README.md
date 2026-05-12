@@ -2,6 +2,8 @@
 
 > Arch Linux dotfiles managed with [GNU Stow](https://www.gnu.org/software/stow/), featuring a Hyprland (Wayland) desktop environment with a custom QuickShell bar and a unified theme system that applies across the entire setup.
 
+This is a fork of [lyne-dots](https://github.com/caioax/lyne-dots). Heavily modified for personal use.
+
 ---
 
 ## 📸 Screenshots
@@ -69,7 +71,7 @@ No restarts required.
 | Nord             | Nord Light       |
 | Rose Pine        | Rose Pine Dawn   |
 
-**Material You mode** generates a color palette from your current wallpaper using [matugen](https://github.com/InioX/matugen), supporting both dark and light schemes. Enable it from Quick Settings or with `lyne theme auto`.
+**Material You mode** generates a color palette from your current wallpaper using [matugen](https://github.com/InioX/matugen), supporting both dark and light schemes. Enable it from Quick Settings or with `pwcca theme auto`.
 
 ---
 
@@ -84,8 +86,8 @@ No restarts required.
 ### Steps
 
 ```bash
-git clone <repo-url> ~/.lyne-dots
-cd ~/.lyne-dots
+git clone <repo-url> ~/.pwcca-dots
+cd ~/.pwcca-dots
 ./install.sh
 ```
 
@@ -117,12 +119,12 @@ See [.install/README.md](.install/README.md) for more details.
 
 ## 🔧 CLI
 
-This setup includes a built-in CLI tool called `lyne` for managing the dotfiles. It is loaded automatically via `.zshrc`.
+This setup includes a built-in CLI tool called `pwcca` for managing the dotfiles. It is loaded automatically via `.zshrc`.
 
 ### Usage
 
 ```
-lyne <command> [args...]
+pwcca <command> [args...]
 ```
 
 ### Commands
@@ -137,43 +139,43 @@ lyne <command> [args...]
 | `reload`  | Reload QuickShell                                   |
 | `help`    | Show available commands                             |
 
-Run `lyne <command> --help` for details and subcommands.
+Run `pwcca <command> --help` for details and subcommands.
 
 ### Examples
 
 ```bash
 # Show current theme info
-lyne theme
+pwcca theme
 
 # List all available themes (dark and light)
-lyne theme list
+pwcca theme list
 
 # Switch to a specific theme preset
-lyne theme set catppuccin-mocha
+pwcca theme set catppuccin-mocha
 
 # Switch to Material You auto mode (colors from wallpaper)
-lyne theme auto
+pwcca theme auto
 
 # Toggle between dark and light scheme
-lyne theme scheme light
+pwcca theme scheme light
 
 # Pull the latest changes and apply migrations
-lyne update
+pwcca update
 
 # Check the git status of the dotfiles
-lyne git status
+pwcca git status
 
 # Edit the QuickShell state configuration
-lyne state
+pwcca state
 
 # Sync state.json after a manual defaults.json update
-lyne state sync
+pwcca state sync
 
 # Check which migrations are pending
-lyne migrate list
+pwcca migrate list
 
 # Show help for a specific command
-lyne state --help
+pwcca state --help
 ```
 
 ---
@@ -254,11 +256,11 @@ Each top-level directory is a [GNU Stow](https://www.gnu.org/software/stow/) pac
 
 ### Other Directories
 
-| Directory         | Description                                       |
-| ----------------- | ------------------------------------------------- |
-| `.install/`       | Installation scripts and package lists            |
-| `.data/`          | Templates, default themes, and default wallpapers |
-| `.data/lyne-cli/` | CLI commands, libraries, and migrations           |
+| Directory          | Description                                       |
+| ------------------ | ------------------------------------------------- |
+| `.install/`        | Installation scripts and package lists            |
+| `.data/`           | Templates, default themes, and default wallpapers |
+| `.data/pwcca-cli/` | CLI commands, libraries, and migrations           |
 
 ---
 
@@ -277,7 +279,7 @@ Each top-level directory is a [GNU Stow](https://www.gnu.org/software/stow/) pac
 | Auto Theming    | matugen         |
 | File Manager    | Dolphin         |
 | Browser         | Zen Browser     |
-| AUR Helper      | yay             |
+| AUR Helper      | paru            |
 | Dotfile Manager | GNU Stow        |
 
 ---

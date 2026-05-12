@@ -105,7 +105,7 @@ bind("XF86AudioPause", exec("playerctl play-pause"), { locked = true })
 bind("XF86AudioPlay", exec("playerctl play-pause"), { locked = true })
 bind("XF86AudioPrev", exec("playerctl previous"), { locked = true })
 
-bind(mod .. " + SHIFT + R", exec("lyne reload"))
+bind(mod .. " + SHIFT + R", exec("pwcca reload"))
 bind("Print", hl.dsp.global("quickshell:take_screenshot"))
 bind(mod .. " + Escape", hl.dsp.global("quickshell:power_menu"))
 bind(mod .. " + Space", hl.dsp.global("quickshell:app_launcher"))

@@ -1,13 +1,13 @@
 # run-migrations.sh - Run pending migration scripts
 #
-# Migrations live in .data/lyne-cli/migrations/ as numbered shell scripts.
+# Migrations live in .data/pwcca-cli/migrations/ as numbered shell scripts.
 # Each migration runs only once. Completed migrations are tracked in
 # a local file that is not managed by git.
 #
 # Usage: source this file (expects $DOTS_DIR to be set)
 
-local MIGRATIONS_DIR="$DOTS_DIR/.data/lyne-cli/migrations"
-local DONE_FILE="$HOME/.local/share/lyne/migrations-done"
+local MIGRATIONS_DIR="$DOTS_DIR/.data/pwcca-cli/migrations"
+local DONE_FILE="$HOME/.local/share/pwcca/migrations-done"
 
 # Ensure tracking directory exists
 mkdir -p "$(dirname "$DONE_FILE")"

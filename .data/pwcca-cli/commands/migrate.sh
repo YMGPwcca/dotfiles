@@ -1,7 +1,7 @@
 # Manage migration scripts
 
-local MIGRATIONS_DIR="$DOTS_DIR/.data/lyne-cli/migrations"
-local DONE_FILE="$HOME/.local/share/lyne/migrations-done"
+local MIGRATIONS_DIR="$DOTS_DIR/.data/pwcca-cli/migrations"
+local DONE_FILE="$HOME/.local/share/pwcca/migrations-done"
 local subcmd="${1:-}"
 
 mkdir -p "$(dirname "$DONE_FILE")"
@@ -9,7 +9,7 @@ touch "$DONE_FILE"
 
 case "$subcmd" in
     -h|--help)
-        echo "Usage: lyne migrate [subcommand]"
+        echo "Usage: pwcca migrate [subcommand]"
         echo ""
         echo "Manage dotfiles migration scripts."
         echo ""
@@ -60,10 +60,10 @@ case "$subcmd" in
         ;;
     "")
         echo ":: Running pending migrations..."
-        source "$DOTS_DIR/.data/lyne-cli/lib/run-migrations.sh"
+        source "$DOTS_DIR/.data/pwcca-cli/lib/run-migrations.sh"
         ;;
     *)
         echo "migrate: unknown subcommand '$subcmd'"
-        echo "Run 'lyne migrate --help' for usage information."
+        echo "Run 'pwcca migrate --help' for usage information."
         ;;
 esac

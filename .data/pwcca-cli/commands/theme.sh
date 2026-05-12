@@ -25,7 +25,7 @@ _theme_set_state() {
 
 case "$subcmd" in
     -h|--help)
-        echo "Usage: lyne theme [subcommand]"
+        echo "Usage: pwcca theme [subcommand]"
         echo ""
         echo "Manage the theme mode and active preset."
         echo ""
@@ -55,13 +55,13 @@ case "$subcmd" in
     set)
         local theme_name="${2:-}"
         if [[ -z "$theme_name" ]]; then
-            echo "Usage: lyne theme set <name>"
-            echo "Run 'lyne theme list' to see available themes."
+            echo "Usage: pwcca theme set <name>"
+            echo "Run 'pwcca theme list' to see available themes."
             return 1
         fi
         if [[ ! -f "$THEMES_DIR/$theme_name.json" ]]; then
             echo "theme: unknown theme '$theme_name'"
-            echo "Run 'lyne theme list' to see available themes."
+            echo "Run 'pwcca theme list' to see available themes."
             return 1
         fi
         _theme_set_state "theme.mode" "preset"
@@ -119,6 +119,6 @@ case "$subcmd" in
         ;;
     *)
         echo "theme: unknown subcommand '$subcmd'"
-        echo "Run 'lyne theme --help' for usage information."
+        echo "Run 'pwcca theme --help' for usage information."
         ;;
 esac
