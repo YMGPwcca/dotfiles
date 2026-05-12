@@ -1,4 +1,4 @@
-# lyne migrate - Manage migration scripts
+# Manage migration scripts
 
 local MIGRATIONS_DIR="$DOTS_DIR/.data/lyne-cli/migrations"
 local DONE_FILE="$HOME/.local/share/lyne/migrations-done"
@@ -35,7 +35,7 @@ case "$subcmd" in
         done
 
         if [[ $total -eq 0 ]]; then
-            echo "lyne migrate: no migrations found"
+            echo "migrate: no migrations found"
         else
             echo ""
             echo "  $total total, $pending pending"
@@ -53,9 +53,9 @@ case "$subcmd" in
         done
 
         if [[ $count -eq 0 ]]; then
-            echo "lyne migrate: all migrations already marked as done"
+            echo "migrate: all migrations already marked as done"
         else
-            echo "lyne migrate: marked $count migrations as done"
+            echo "migrate: marked $count migrations as done"
         fi
         ;;
     "")
@@ -63,7 +63,7 @@ case "$subcmd" in
         source "$DOTS_DIR/.data/lyne-cli/lib/run-migrations.sh"
         ;;
     *)
-        echo "lyne migrate: unknown subcommand '$subcmd'"
+        echo "migrate: unknown subcommand '$subcmd'"
         echo "Run 'lyne migrate --help' for usage information."
         ;;
 esac

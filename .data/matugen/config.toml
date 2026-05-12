@@ -1,4 +1,4 @@
-# Matugen configuration for Lyne Dots
+# Matugen configuration
 # Generates Material You color schemes from wallpapers
 
 [config]
@@ -19,7 +19,7 @@ output_path = "~/.config/kitty/current-theme.conf"
 
 [templates.qt-colors]
 input_path = "~/.lyne-dots/.data/matugen/templates/qt-colors.colors"
-output_path = "~/.local/share/color-schemes/Lyne.colors"
+output_path = "~/.local/share/color-schemes/generated.colors"
 
 [templates.quickshell-palette]
 input_path = "~/.lyne-dots/.data/matugen/templates/quickshell-palette.json"

@@ -8,6 +8,6 @@ local vars = {
     main_mod = "SUPER",
 }
 
-_G.Lyne = vars
+_G.Dotfiles = vars
 
 return vars

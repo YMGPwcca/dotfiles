@@ -1,4 +1,4 @@
-# lyne git - Passthrough to git in the dotfiles repo
+# Passthrough to git in the dotfiles repo
 
 if [[ "${1:-}" == "-h" || "${1:-}" == "--help" ]]; then
     echo "Usage: lyne git <args...>"

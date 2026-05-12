@@ -1,4 +1,4 @@
-# lyne state - Manage state.json
+# Manage state.json
 
 local STATE_FILE="$DOTS_DIR/quickshell/.config/quickshell/state.json"
 local DEFAULTS_FILE="$DOTS_DIR/.data/quickshell/defaults.json"
@@ -21,19 +21,19 @@ case "$subcmd" in
         ;;
     rebuild)
         if [[ ! -f "$DEFAULTS_FILE" ]]; then
-            echo "lyne state: defaults.json not found at $DEFAULTS_FILE"
+            echo "state: defaults.json not found at $DEFAULTS_FILE"
             return 1
         fi
 
         echo -n "This will replace state.json with defaults. Continue? [y/N]: "
         read -r confirm
         if [[ ! "$confirm" =~ ^[Yy]$ ]]; then
-            echo "lyne state: cancelled"
+            echo "state: cancelled"
             return 0
         fi
 
         cp "$DEFAULTS_FILE" "$STATE_FILE"
-        echo "lyne state: rebuilt state.json from defaults"
+        echo "state: rebuilt state.json from defaults"
         ;;
     "")
         local default_editor="nvim"
@@ -44,12 +44,12 @@ case "$subcmd" in
             eval "$custom_editor $STATE_FILE"
         else
             [[ -n "$custom_editor" && "$custom_editor" != "null" ]] && \
-                echo "lyne state: editor '$custom_editor' not found, falling back to $default_editor"
+                echo "state: editor '$custom_editor' not found, falling back to $default_editor"
             $default_editor "$STATE_FILE"
         fi
         ;;
     *)
-        echo "lyne state: unknown subcommand '$subcmd'"
+        echo "state: unknown subcommand '$subcmd'"
         echo "Run 'lyne state --help' for usage information."
         ;;
 esac

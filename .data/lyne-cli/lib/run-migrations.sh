@@ -31,7 +31,7 @@ for migration in "$MIGRATIONS_DIR"/*.sh; do
     if source "$migration"; then
         echo "$name" >> "$DONE_FILE"
     else
-        echo "lyne migrate: migration '$name' failed, stopping"
+        echo "migrate: migration '$name' failed, stopping"
         return 1
     fi
 done

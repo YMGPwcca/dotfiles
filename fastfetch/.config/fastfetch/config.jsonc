@@ -58,9 +58,7 @@
             "type": "command",
             "key": "{#2}{#blue} │{#0} {#blue}󰏖 {#white}apps    {#2}{#blue}│",
             "shell": "/bin/bash",
-            // Lógica: Conta pacman. Verifica se flatpak existe e conta. Monta a frase.
             "text": "p=$(pacman -Qq | wc -l); echo -n \"$p (pacman)\"; if command -v flatpak >/dev/null; then f=$(flatpak list --app | wc -l); if [ \"$f\" -gt 0 ]; then echo -n \"   $f (flatpak)\"; fi; fi",
-            // Aplica a sua formatação de cor (Branco + Escuro + Itálico) no resultado
             "format": "{#white}{#2}{#3}{result}{#0}"
         },
         {

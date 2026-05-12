@@ -1,5 +1,5 @@
 #!/usr/bin/env bash
-# lyne - Dotfiles management CLI
+# Dotfiles management CLI
 
 DOTS_DIR="$HOME/.lyne-dots"
 CMD_DIR="$DOTS_DIR/.data/lyne-cli/commands"
@@ -16,7 +16,7 @@ if [[ -f "$cmd_file" ]]; then
     }
     _lyne_run "$@"
 else
-    echo "lyne: unknown command '$cmd'"
+    echo "unknown command '$cmd'"
     echo "Run 'lyne help' for usage information."
     exit 1
 fi

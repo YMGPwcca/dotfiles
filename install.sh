@@ -1,13 +1,5 @@
 #!/bin/bash
-# =============================================================================
-#
-#   █   █▄█ █▄ █ █▀▀ ▄▄ █▀▄ █▀█ ▀█▀ █▀
-#   █▄▄  █  █ ▀█ ██▄    █▄▀ █▄█  █  ▄█
-#
-#   Installation Script
-#   https://github.com/caioax/lyne-dots
-#
-# =============================================================================
+# Installation script
 
 set -e
 
@@ -360,7 +352,7 @@ setup_wallpaper() {
 }
 
 setup_migrations() {
-    log_header "Initializing Lyne CLI"
+    log_header "Initializing CLI"
 
     local MIGRATIONS_DIR="$DOTFILES_DIR/.data/lyne-cli/migrations"
     local DONE_FILE="$HOME/.local/share/lyne/migrations-done"
@@ -557,20 +549,7 @@ show_summary() {
 # Show banner
 # =============================================================================
 show_banner() {
-    echo ""
-    echo -e "${CYAN}"
-    cat <<'EOF'
-    ╔═══════════════════════════════════════════════════════════════╗
-    ║                                                               ║
-    ║   █   █▄█ █▄ █ █▀▀ ▄▄ █▀▄ █▀█ ▀█▀ █▀                          ║
-    ║   █▄▄  █  █ ▀█ ██▄    █▄▀ █▄█  █  ▄█                          ║
-    ║                                                               ║
-    ║   https://github.com/caioax/lyne-dots                         ║
-    ║   Installation Script                                         ║
-    ║                                                               ║
-    ╚═══════════════════════════════════════════════════════════════╝
-EOF
-    echo -e "${NC}"
+    :
 }
 
 # =============================================================================

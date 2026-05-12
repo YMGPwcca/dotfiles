@@ -1,6 +1,6 @@
-# lyne help - Show available commands
+# Show available commands
 
-echo "lyne - Dotfiles management CLI"
+echo "Dotfiles management CLI"
 echo ""
 echo "Usage: lyne <command> [args...]"
 echo ""

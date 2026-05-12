@@ -1,4 +1,4 @@
-# lyne update - Pull latest changes, sync state and run migrations
+# Pull latest changes, sync state and run migrations
 
 if [[ "${1:-}" == "-h" || "${1:-}" == "--help" ]]; then
     echo "Usage: lyne update"
@@ -15,7 +15,7 @@ echo -e "\e[1;34m:: Pulling latest changes...\e[0m"
 git -C "$DOTS_DIR" pull
 
 if [[ $? -ne 0 ]]; then
-    echo "lyne update: git pull failed"
+    echo "update: git pull failed"
     return 1
 fi
 
@@ -28,9 +28,9 @@ source "$DOTS_DIR/.data/lyne-cli/lib/run-migrations.sh"
 echo -e "\e[1;34m:: Reloading Quickshell...\e[0m"
 source "$DOTS_DIR/.data/lyne-cli/commands/reload.sh"
 
-# Ensure stow symlinks are up to date (lyne CLI, etc)
+# Ensure stow symlinks are up to date.
 cd "$DOTS_DIR" && stow -R local 2>/dev/null
 
 # Final Success Message
 echo ""
-echo -e "\e[1;32m✔ Lyne is up to date!\e[0m"
+echo -e "\e[1;32m✔ Update complete\e[0m"

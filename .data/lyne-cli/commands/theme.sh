@@ -1,4 +1,4 @@
-# lyne theme - Manage theme settings
+# Manage theme settings
 
 local STATE_FILE="$DOTS_DIR/quickshell/.config/quickshell/state.json"
 local THEMES_DIR="$HOME/.local/themes"
@@ -60,7 +60,7 @@ case "$subcmd" in
             return 1
         fi
         if [[ ! -f "$THEMES_DIR/$theme_name.json" ]]; then
-            echo "lyne theme: unknown theme '$theme_name'"
+            echo "theme: unknown theme '$theme_name'"
             echo "Run 'lyne theme list' to see available themes."
             return 1
         fi
@@ -100,7 +100,7 @@ case "$subcmd" in
 
             echo "Color scheme set to: $scheme_arg"
         else
-            echo "lyne theme scheme: must be 'dark' or 'light'"
+            echo "theme scheme: must be 'dark' or 'light'"
             return 1
         fi
         ;;
@@ -118,7 +118,7 @@ case "$subcmd" in
         fi
         ;;
     *)
-        echo "lyne theme: unknown subcommand '$subcmd'"
+        echo "theme: unknown subcommand '$subcmd'"
         echo "Run 'lyne theme --help' for usage information."
         ;;
 esac
