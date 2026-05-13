@@ -4,6 +4,36 @@ local reconciling = false
 local scripted_fullscreen_events = 0
 local manually_windowed = {}
 
+local function load_preferences()
+    local path = (os.getenv("HOME") or "") .. "/.config/hypr/local/preferences.lua"
+    local file = io.open(path, "r")
+    if file == nil then
+        return {}
+    end
+    file:close()
+
+    local chunk, err = loadfile(path)
+    if not chunk then
+        error(err)
+    end
+
+    local preferences = chunk()
+    if type(preferences) ~= "table" then
+        return {}
+    end
+
+    return preferences
+end
+
+local function solo_fullscreen_enabled()
+    local preferences = load_preferences()
+    if preferences.solo_fullscreen == nil then
+        return true
+    end
+
+    return preferences.solo_fullscreen
+end
+
 local function is_manageable_window(window)
     return window ~= nil
         and window.mapped
@@ -72,6 +102,15 @@ local function reconcile_workspace(workspace)
         end
     end
 
+    if not solo_fullscreen_enabled() then
+        for _, window in ipairs(windows) do
+            if window.fullscreen ~= 0 and not has_client_fullscreen(window) then
+                set_fullscreen_state(window, 0, 0)
+            end
+        end
+        return
+    end
+
     if #windows == 1 then
         local window = windows[1]
         local key = window_key(window)
@@ -126,6 +165,11 @@ local function schedule_reconcile()
 end
 
 local function track_manual_fullscreen_toggle()
+    if not solo_fullscreen_enabled() then
+        schedule_reconcile()
+        return
+    end
+
     local active_window = hl.get_active_window()
     local solo_window = nil
 
