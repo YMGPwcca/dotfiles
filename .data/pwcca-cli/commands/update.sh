@@ -25,6 +25,11 @@ source "$DOTS_DIR/.data/pwcca-cli/lib/sync-state.sh"
 source "$DOTS_DIR/.data/pwcca-cli/lib/hypr-preferences.sh"
 pwcca_configure_hypr_preferences "$HOME/.config/hypr"
 
+if command -v hyprctl >/dev/null 2>&1 && [[ -n "${HYPRLAND_INSTANCE_SIGNATURE:-}" ]]; then
+    echo -e "\e[1;34m:: Reloading Hyprland...\e[0m"
+    hyprctl reload
+fi
+
 echo -e "\e[1;34m:: Checking migrations...\e[0m"
 source "$DOTS_DIR/.data/pwcca-cli/lib/run-migrations.sh"
 
