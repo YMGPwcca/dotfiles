@@ -28,7 +28,6 @@ APPS_PACKAGES=(
 # AUR packages
 APPS_AUR_PACKAGES=(
     "zen-browser-bin" # Zen Browser (Firefox fork)
-    "spotify"         # Spotify music player
-
+    "visual-studio-code-bin" # Visual Studio Code (Microsoft's version)
     "qview" # Image viewer
 )

@@ -9,6 +9,7 @@ DOTFILES_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")/../.." && pwd)"
 TEMPLATES_DIR="$DOTFILES_DIR/.data/hyprland/templates"
 UWSM_TEMPLATES_DIR="$DOTFILES_DIR/.data/hyprland/uwsm"
 QUICKSHELL_DATA_DIR="$DOTFILES_DIR/.data/quickshell"
+HYPR_PREFERENCES_LIB="$DOTFILES_DIR/.data/pwcca-cli/lib/hypr-preferences.sh"
 
 # Destination directories
 HYPR_CONFIG_DIR="$HOME/.config/hypr"
@@ -136,6 +137,18 @@ setup_local_configs() {
         "$TEMPLATES_DIR/extra_keybinds.lua" \
         "$HYPR_LOCAL_DIR/extra_keybinds.lua" \
         "local/extra_keybinds.lua (local keybinds)"
+}
+
+# =============================================================================
+# Configure Hyprland preferences
+# =============================================================================
+setup_hypr_preferences() {
+    if [[ -f "$HYPR_PREFERENCES_LIB" ]]; then
+        source "$HYPR_PREFERENCES_LIB"
+        pwcca_configure_hypr_preferences "$HYPR_CONFIG_DIR"
+    else
+        log_warn "Hyprland preferences helper not found: $HYPR_PREFERENCES_LIB"
+    fi
 }
 
 # =============================================================================
@@ -298,6 +311,7 @@ run_hyprland_main() {
     setup_monitors
     setup_workspaces
     setup_local_configs
+    setup_hypr_preferences
     setup_quickshell
     setup_wallpapers
 
@@ -318,6 +332,7 @@ run_hyprland_main() {
     echo "  - ~/.config/hypr/local/extra_environment.lua"
     echo "  - ~/.config/hypr/local/autostart.lua"
     echo "  - ~/.config/hypr/local/extra_keybinds.lua"
+    echo "  - ~/.config/hypr/local/preferences.lua"
     echo "  - ~/.config/uwsm/env.d/global_hardware.sh"
     echo "  - ~/.config/uwsm/env.d/hyprland_hardware.sh"
     echo "  - ~/.config/quickshell/state.json"

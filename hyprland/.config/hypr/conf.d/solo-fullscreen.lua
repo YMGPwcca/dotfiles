@@ -46,6 +46,10 @@ local function solo_workspace_window(workspace)
     return windows[1]
 end
 
+local function has_client_fullscreen(window)
+    return window.fullscreen_client ~= nil and window.fullscreen_client ~= 0
+end
+
 local function set_fullscreen_state(window, internal, client)
     scripted_fullscreen_events = scripted_fullscreen_events + 1
     hl.dispatch(hl.dsp.window.fullscreen_state({
@@ -75,7 +79,11 @@ local function reconcile_workspace(workspace)
             return
         end
 
-        if not window.floating and (window.fullscreen ~= 2 or window.fullscreen_client ~= 0) then
+        if has_client_fullscreen(window) then
+            return
+        end
+
+        if not window.floating and window.fullscreen ~= 2 then
             set_fullscreen_state(window, 2, 0)
         elseif window.floating and window.fullscreen ~= 0 then
             set_fullscreen_state(window, 0, 0)
@@ -84,7 +92,7 @@ local function reconcile_workspace(workspace)
     end
 
     for _, window in ipairs(windows) do
-        if window.fullscreen ~= 0 then
+        if window.fullscreen ~= 0 and not has_client_fullscreen(window) then
             set_fullscreen_state(window, 0, 0)
         end
     end

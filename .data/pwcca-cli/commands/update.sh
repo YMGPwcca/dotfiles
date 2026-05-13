@@ -22,6 +22,9 @@ fi
 echo -e "\e[1;34m:: Syncing state.json...\e[0m"
 source "$DOTS_DIR/.data/pwcca-cli/lib/sync-state.sh"
 
+source "$DOTS_DIR/.data/pwcca-cli/lib/hypr-preferences.sh"
+pwcca_configure_hypr_preferences "$HOME/.config/hypr"
+
 echo -e "\e[1;34m:: Checking migrations...\e[0m"
 source "$DOTS_DIR/.data/pwcca-cli/lib/run-migrations.sh"
 

@@ -28,13 +28,45 @@ local function source_file_if_exists(path)
     chunk()
 end
 
+local function load_preferences()
+    local path = config_dir .. "/local/preferences.lua"
+    local file = io.open(path, "r")
+    if file == nil then
+        return {}
+    end
+    file:close()
+
+    local chunk, err = loadfile(path)
+    if not chunk then
+        error(err)
+    end
+
+    local preferences = chunk()
+    if type(preferences) ~= "table" then
+        return {}
+    end
+
+    return preferences
+end
+
+local function preference_enabled(name, default)
+    local preferences = load_preferences()
+    if preferences[name] == nil then
+        return default
+    end
+
+    return preferences[name]
+end
+
 source("variables")
 source("environment")
 source("autostart")
 source("appearance")
 source("input")
 source("rules")
-source("solo-fullscreen")
+if preference_enabled("solo_fullscreen", true) then
+    source("solo-fullscreen")
+end
 source("keybinds")
 
 source_file_if_exists(config_dir .. "/monitors.lua")
