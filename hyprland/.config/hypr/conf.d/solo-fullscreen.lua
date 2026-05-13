@@ -41,6 +41,10 @@ local function is_manageable_window(window)
         and not window.pinned
 end
 
+local function is_tiled_window(window)
+    return is_manageable_window(window) and not window.floating
+end
+
 local function window_key(window)
     if window == nil then
         return nil
@@ -64,7 +68,7 @@ local function solo_workspace_window(workspace)
 
     local windows = {}
     for _, window in ipairs(workspace:get_windows()) do
-        if is_manageable_window(window) then
+        if is_tiled_window(window) then
             table.insert(windows, window)
         end
     end
@@ -96,9 +100,13 @@ local function reconcile_workspace(workspace)
     end
 
     local windows = {}
+    local tiled_windows = {}
     for _, window in ipairs(workspace:get_windows()) do
         if is_manageable_window(window) then
             table.insert(windows, window)
+            if is_tiled_window(window) then
+                table.insert(tiled_windows, window)
+            end
         end
     end
 
@@ -111,8 +119,8 @@ local function reconcile_workspace(workspace)
         return
     end
 
-    if #windows == 1 then
-        local window = windows[1]
+    if #tiled_windows == 1 then
+        local window = tiled_windows[1]
         local key = window_key(window)
         if key ~= nil and manually_windowed[key] then
             return
@@ -130,6 +138,7 @@ local function reconcile_workspace(workspace)
         return
     end
 
+    manually_windowed = {}
     for _, window in ipairs(windows) do
         if window.fullscreen ~= 0 and not has_client_fullscreen(window) then
             set_fullscreen_state(window, 0, 0)
@@ -225,13 +234,18 @@ end
 for _, event in ipairs({
     "hyprland.start",
     "config.reloaded",
+}) do
+    hl.on(event, reset_manual_windowed)
+end
+
+for _, event in ipairs({
     "window.open",
     "window.close",
     "window.destroy",
     "window.move_to_workspace",
     "window.pin",
 }) do
-    hl.on(event, reset_manual_windowed)
+    hl.on(event, schedule_reconcile)
 end
 
 for _, event in ipairs({
