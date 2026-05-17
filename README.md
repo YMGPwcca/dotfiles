@@ -2,7 +2,7 @@
 
 > Arch Linux dotfiles managed with [GNU Stow](https://www.gnu.org/software/stow/), featuring a Hyprland (Wayland) desktop environment with a custom QuickShell bar and a fixed Tokyo Night appearance.
 
-This is a fork of [lyne-dots](https://github.com/caioax/lyne-dots). Heavily modified for personal use.
+This repo is originally based on [lyne-dots](https://github.com/caioax/lyne-dots), then heavily modified for personal use.
 
 ---
 
@@ -253,4 +253,5 @@ Wallpapers live in `~/.local/wallpapers/` (git-ignored, defaults copied on insta
 
 ## 🙏 Credits
 
+- Original dotfiles foundation from [caioax/lyne-dots](https://github.com/caioax/lyne-dots)
 - Screenshot implementation inspired by [HyprQuickFrame](https://github.com/Ronin-CK/HyprQuickFrame)
