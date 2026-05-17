@@ -2,7 +2,6 @@ local home = os.getenv("HOME") or error("HOME is not set")
 
 hl.on("hyprland.start", function()
     hl.exec_cmd("quickshell")
-    hl.exec_cmd("/usr/lib/polkit-kde-authentication-agent-1")
     hl.exec_cmd("kbuildsycoca6")
     hl.exec_cmd("hyprsunset -t 7000")
     hl.exec_cmd("xingyao-osd-notify")

@@ -31,10 +31,13 @@ Scope {
 
             margins {
                 top: 10
-                right: 10
+                right: 0
             }
 
-            implicitWidth: Config.notifWidth
+            readonly property int entryOffset: 90
+            readonly property int screenRightPadding: 10
+
+            implicitWidth: Config.notifWidth + entryOffset + screenRightPadding
             implicitHeight: notifListView.contentHeight
 
             color: "transparent"
@@ -50,8 +53,9 @@ Scope {
                 id: notifListView
                 anchors.fill: parent
 
-                // Uses the list of active popups
-                model: NotificationService.popups
+                // Use the stable history list. Filtering to a computed popup
+                // array recreates delegates and makes existing cards flash.
+                model: NotificationService.notifications
 
                 spacing: 0
                 interactive: false
@@ -65,11 +69,20 @@ Scope {
                     }
                 }
 
-                delegate: NotificationCard {
+                delegate: Item {
                     required property var modelData
 
-                    wrapper: modelData
-                    popupMode: true
+                    width: notifListView.width
+                    height: card.implicitHeight
+
+                    NotificationCard {
+                        id: card
+
+                        wrapper: modelData
+                        popupMode: true
+                        restingX: window.entryOffset
+                        entryFromX: notifListView.width
+                    }
                 }
             }
         }

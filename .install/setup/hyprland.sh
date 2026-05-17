@@ -187,6 +187,22 @@ EOF
 }
 
 # =============================================================================
+# Enable Hyprland polkit agent
+# =============================================================================
+setup_polkit_agent() {
+    echo ""
+    log_info "Configuring polkit agent..."
+
+    if systemctl --user list-unit-files hyprpolkitagent.service >/dev/null 2>&1; then
+        systemctl --user enable --now hyprpolkitagent.service >/dev/null 2>&1 \
+            && log_info "  Enabled: hyprpolkitagent.service" \
+            || log_warn "  Could not enable hyprpolkitagent.service"
+    else
+        log_warn "  hyprpolkitagent.service not found; install hyprpolkitagent"
+    fi
+}
+
+# =============================================================================
 # Ask about NVIDIA
 # =============================================================================
 ask_nvidia() {
@@ -313,6 +329,7 @@ run_hyprland_main() {
     setup_local_configs
     setup_hypr_preferences
     setup_quickshell
+    setup_polkit_agent
     setup_wallpapers
 
     if ask_nvidia; then

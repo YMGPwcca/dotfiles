@@ -48,9 +48,8 @@ UTILS_PACKAGES=(
     "imagemagick" # Image manipulation
 
     # Misc
-    "polkit-kde-agent" # KDE Polkit agent
-    "qt5-wayland"      # Qt5 Wayland support
-    "qt6-wayland"      # Qt6 Wayland support
+    "qt5-wayland" # Qt5 Wayland support
+    "qt6-wayland" # Qt6 Wayland support
 
     # Flatpak
     "flatpak" # Flatpak

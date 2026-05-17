@@ -20,5 +20,5 @@ QUICKSHELL_PACKAGES=(
 # AUR packages
 QUICKSHELL_AUR_PACKAGES=(
     # QuickShell
-    "quickshell-git" # QuickShell shell framework
+    "quickshell" # QuickShell shell framework
 )

@@ -21,8 +21,7 @@ Singleton {
             // When DND is enabled, remove all active popups
             for (let i = 0; i < notifications.length; i++) {
                 if (notifications[i] && notifications[i].popup) {
-                    notifications[i].popup = false;
-                    notifications[i].tickTimer.stop();
+                    expireNotification(notifications[i].notifId);
                 }
             }
         }
@@ -35,8 +34,7 @@ Singleton {
                 // Remove active popups
                 for (let i = 0; i < notifications.length; i++) {
                     if (notifications[i] && notifications[i].popup) {
-                        notifications[i].popup = false;
-                        notifications[i].tickTimer.stop();
+                        expireNotification(notifications[i].notifId);
                     }
                 }
             }
@@ -48,7 +46,7 @@ Singleton {
     // ========================================================================
 
     readonly property list<NotifWrapper> notifications: []
-    readonly property list<NotifWrapper> popups: notifications.filter(n => n && n.popup)
+    readonly property list<NotifWrapper> popups: notifications.filter(n => n && (n.popup || n.popupClosing))
 
     readonly property int count: notifications.length
     readonly property int activePopupCount: popups.length
@@ -105,6 +103,8 @@ Singleton {
         id: wrapper
 
         property bool popup: false
+        property bool popupClosing: false
+        property bool popupEntryPlayed: false
 
         // ====== TICK TIMER SYSTEM (for real pause) ======
         property int totalTime: Config.notifTimeout
@@ -128,7 +128,7 @@ Singleton {
                         wrapper.remainingTime = 0;
                         wrapper.progress = 1.0;
                         stop();
-                        wrapper.popup = false;
+                        root.expireNotification(wrapper.notifId);
                         console.log("[Notif] Timer expired for:", wrapper.notifId);
                     }
                 }
@@ -155,7 +155,7 @@ Singleton {
                     tickTimer.start();
                     console.log("[Notif] Resumed:", notifId, "- Remaining:", remainingTime, "ms");
                 } else if (popup && remainingTime <= 0) {
-                    popup = false;
+                    root.expireNotification(notifId);
                 }
             }
         }
@@ -228,20 +228,29 @@ Singleton {
     function expireNotification(notifId) {
         for (let i = 0; i < notifications.length; i++) {
             if (notifications[i].notifId === notifId) {
-                notifications[i].popup = false;
-                notifications[i].tickTimer.stop();
+                const wrapper = notifications[i];
+                if (!wrapper.popup && !wrapper.popupClosing)
+                    break;
+                wrapper.popupClosing = true;
+                wrapper.popup = false;
+                wrapper.tickTimer.stop();
                 break;
             }
         }
     }
 
     function removeNotification(notifId) {
+        finishPopupClose(notifId, true);
+    }
+
+    function finishPopupClose(notifId, removeCompletely) {
         for (let i = 0; i < notifications.length; i++) {
             if (notifications[i].notifId === notifId) {
                 const wrapper = notifications[i];
                 wrapper.popup = false;
+                wrapper.popupClosing = false;
                 wrapper.tickTimer.stop();
-                if (wrapper.notification) {
+                if (removeCompletely && wrapper.notification) {
                     wrapper.notification.dismiss();
                 }
                 break;

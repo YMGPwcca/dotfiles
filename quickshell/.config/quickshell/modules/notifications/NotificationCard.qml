@@ -17,6 +17,8 @@ Item {
 
     // Popup mode (true) or history mode (false)
     property bool popupMode: false
+    property int restingX: 0
+    property int entryFromX: 90
 
     // Internal state for exit animation
     property bool isExiting: false
@@ -36,7 +38,9 @@ Item {
     readonly property bool isUrgent: wrapper ? wrapper.isUrgent : false
     readonly property var actions: wrapper ? wrapper.actions : []
     readonly property bool hasActions: wrapper ? wrapper.hasActions : false
-    readonly property bool showPopup: wrapper ? wrapper.popup : false
+    readonly property bool popupRequested: wrapper ? wrapper.popup : false
+    readonly property bool showPopup: wrapper ? (wrapper.popup || wrapper.popupClosing) : false
+    readonly property bool popupEntryPlayed: wrapper ? wrapper.popupEntryPlayed : true
     readonly property string timeStr: wrapper ? wrapper.timeStr : ""
 
     // Timer progress (0.0 to 1.0) - comes directly from the wrapper
@@ -96,6 +100,8 @@ Item {
 
     readonly property int visualHeight: contentColumn.implicitHeight + 24
     implicitWidth: Config.notifWidth
+    opacity: 1
+    x: restingX
 
     implicitHeight: {
         if (isCollapsed)
@@ -107,7 +113,23 @@ Item {
         return visualHeight + Config.notifSpacing;
     }
 
-    visible: !isCollapsed && (popupMode ? showPopup : true) && opacity > 0 && wrapper !== null
+    visible: !isCollapsed && (popupMode ? showPopup : true) && wrapper !== null
+
+    Component.onCompleted: {
+        if (popupMode && showPopup && !popupEntryPlayed) {
+            opacity = 1;
+            x = entryFromX;
+            enterDelay.restart();
+        } else {
+            opacity = 1;
+            x = restingX;
+        }
+    }
+
+    onPopupRequestedChanged: {
+        if (popupMode && !popupRequested && showPopup && !isExiting)
+            startExitAnimation(false);
+    }
 
     // ========================================================================
     // VISUAL
@@ -335,6 +357,31 @@ Item {
     // EXIT ANIMATION
     // ========================================================================
 
+    ParallelAnimation {
+        id: enterAnim
+
+        NumberAnimation {
+            target: root
+            property: "x"
+            to: root.restingX
+            duration: Config.animDurationLong
+            easing.type: Easing.OutExpo
+        }
+    }
+
+    Timer {
+        id: enterDelay
+        interval: 80
+        repeat: false
+
+        onTriggered: {
+            if (root.popupMode && root.showPopup && !root.popupEntryPlayed) {
+                root.wrapper.popupEntryPlayed = true;
+                enterAnim.start();
+            }
+        }
+    }
+
     function startExitAnimation(removeCompletely) {
         if (isExiting)
             return;
@@ -350,15 +397,8 @@ Item {
         ParallelAnimation {
             NumberAnimation {
                 target: root
-                property: "opacity"
-                to: 0
-                duration: Config.animDuration
-                easing.type: Easing.OutQuad
-            }
-            NumberAnimation {
-                target: root
                 property: "x"
-                to: 50
+                to: root.entryFromX
                 duration: Config.animDuration
                 easing.type: Easing.InQuad
             }
@@ -376,14 +416,10 @@ Item {
             script: {
                 const id = root.notifId;
 
-                if (exitAnim.removeCompletely) {
-                    NotificationService.removeNotification(id);
-                } else {
-                    NotificationService.expireNotification(id);
-                }
+                NotificationService.finishPopupClose(id, exitAnim.removeCompletely);
 
                 root.opacity = 1;
-                root.x = 0;
+                root.x = root.restingX;
                 root.isCollapsed = false;
                 root.isExiting = false;
             }
