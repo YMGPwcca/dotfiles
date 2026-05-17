@@ -168,18 +168,6 @@ Item {
             color: Qt.alpha(Config.errorColor, root.popupMode ? 0.20 : 0.14)
         }
 
-        Rectangle {
-            anchors.left: parent.left
-            anchors.right: parent.right
-            anchors.top: parent.top
-            anchors.leftMargin: 1
-            anchors.rightMargin: 1
-            anchors.topMargin: 1
-            height: 1
-            radius: Config.radiusLarge
-            color: root.isUrgent ? Qt.alpha(Config.errorColor, 0.36) : Qt.alpha(Config.textColor, 0.12)
-        }
-
         // Progress bar (only in popup mode)
         Rectangle {
             visible: root.popupMode

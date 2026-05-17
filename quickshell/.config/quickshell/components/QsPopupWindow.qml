@@ -153,17 +153,6 @@ PanelWindow {
                 anchors {
                     left: parent.left
                     right: parent.right
-                    top: parent.top
-                    margins: 1
-                }
-                height: 1
-                color: Qt.alpha(Config.textColor, 0.22)
-            }
-
-            Rectangle {
-                anchors {
-                    left: parent.left
-                    right: parent.right
                     bottom: parent.bottom
                     margins: 1
                 }
