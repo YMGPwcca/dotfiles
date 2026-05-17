@@ -47,7 +47,6 @@
     "spacing": 10
   },
   "idle": {
-    "caffeine": false,
     "dpmsEnabled": true,
     "mediaInhibit": true,
     "lockTimeout": 600,

@@ -149,17 +149,6 @@ PanelWindow {
                 anchors.fill: parent
             }
 
-            Rectangle {
-                anchors {
-                    left: parent.left
-                    right: parent.right
-                    bottom: parent.bottom
-                    margins: 1
-                }
-                height: 1
-                color: Qt.alpha(Config.backgroundColor, 0.35)
-            }
-
             Item {
                 id: contentContainer
                 anchors.fill: parent

@@ -124,6 +124,7 @@ Item {
             // Power Menu
             ClearButton {
                 icon: "⏻"
+                borderColor: Config.errorColor
 
                 Layout.preferredWidth: 36
                 Layout.preferredHeight: 36
@@ -207,15 +208,6 @@ Item {
                 onToggled: NotificationService.toggleDnd()
             }
 
-            // Caffeine
-            QuickSettingsTile {
-                icon: IdleService.caffeineEnabled ? "󰛊" : "󰾪"
-                label: "Caffeine"
-                subLabel: IdleService.caffeineEnabled ? "Active" : "Off"
-                active: IdleService.caffeineEnabled
-                hasDetails: false
-                onToggled: IdleService.toggleCaffeine()
-            }
         }
 
         // ========== SEPARATOR ==========
@@ -231,15 +223,6 @@ Item {
             spacing: 12
             Layout.topMargin: 1
 
-            QsSlider {
-                icon: AudioService.systemIcon
-                value: AudioService.volume
-                fillColor: AudioService.muted ? Qt.alpha(Config.surface3Color, 0.55) : Config.accentColor
-
-                onMoved: val => AudioService.setVolume(val)
-                onIconClicked: AudioService.toggleMute()
-            }
-
             // Brightness (only shows if available)
             QsSlider {
                 visible: BrightnessService.available
@@ -248,6 +231,15 @@ Item {
 
                 onMoved: val => BrightnessService.setBrightness(val)
                 onIconClicked: BrightnessService.toggleBrightness()
+            }
+
+            QsSlider {
+                icon: AudioService.systemIcon
+                value: AudioService.volume
+                fillColor: AudioService.muted ? Qt.alpha(Config.surface3Color, 0.55) : Config.accentColor
+
+                onMoved: val => AudioService.setVolume(val)
+                onIconClicked: AudioService.toggleMute()
             }
         }
     }

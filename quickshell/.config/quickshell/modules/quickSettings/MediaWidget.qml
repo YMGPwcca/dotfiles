@@ -70,18 +70,6 @@ Rectangle {
         }
     }
 
-    Rectangle {
-        anchors.left: parent.left
-        anchors.right: parent.right
-        anchors.top: parent.top
-        anchors.leftMargin: 1
-        anchors.rightMargin: 1
-        anchors.topMargin: 1
-        height: 1
-        radius: Config.radiusLarge
-        color: Qt.alpha(Config.textColor, 0.14)
-    }
-
     // --- DISMISS BUTTON ---
     Rectangle {
         visible: !MprisService.isPlaying

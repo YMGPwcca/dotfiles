@@ -4,7 +4,6 @@ pragma ComponentBehavior: Bound
 import QtQuick
 import Quickshell
 import Quickshell.Io
-import Quickshell.Wayland
 
 Singleton {
     id: root
@@ -21,7 +20,6 @@ Singleton {
     // PROPERTIES
     // ========================================================================
 
-    property bool caffeineEnabled: getState("idle.caffeine", false)
     property bool dpmsEnabled: getState("idle.dpmsEnabled", true)
     property bool mediaInhibit: getState("idle.mediaInhibit", true)
     property int lockTimeout: getState("idle.lockTimeout", 600)
@@ -41,30 +39,11 @@ Singleton {
         target: StateService
 
         function onStateLoaded() {
-            root.caffeineEnabled = root.getState("idle.caffeine", false);
             root.dpmsEnabled = root.getState("idle.dpmsEnabled", true);
             root.mediaInhibit = root.getState("idle.mediaInhibit", true);
             root.lockTimeout = root.getState("idle.lockTimeout", 600);
             root.dpmsTimeout = root.getState("idle.dpmsTimeout", 300);
-            console.log("[Idle] Loaded state - caffeine:", root.caffeineEnabled, "dpms:", root.dpmsEnabled, "mediaInhibit:", root.mediaInhibit, "lockTimeout:", root.lockTimeout + "s", "dpmsTimeout:", root.dpmsTimeout + "s");
-        }
-    }
-
-    // ========================================================================
-    // IDLE INHIBITOR (CAFFEINE)
-    // ========================================================================
-
-    PanelWindow {
-        id: inhibitorWindow
-        visible: root.caffeineEnabled
-        implicitWidth: 0
-        implicitHeight: 0
-        color: "transparent"
-        mask: Region {}
-
-        IdleInhibitor {
-            enabled: root.caffeineEnabled
-            window: inhibitorWindow
+            console.log("[Idle] Loaded state - dpms:", root.dpmsEnabled, "mediaInhibit:", root.mediaInhibit, "lockTimeout:", root.lockTimeout + "s", "dpmsTimeout:", root.dpmsTimeout + "s");
         }
     }
 
@@ -114,12 +93,6 @@ Singleton {
     function lock() {
         console.log("[Idle] Locking screen");
         LockService.lock();
-    }
-
-    function toggleCaffeine() {
-        caffeineEnabled = !caffeineEnabled;
-        root.setState("idle.caffeine", caffeineEnabled);
-        console.log("[Idle] Caffeine:", caffeineEnabled);
     }
 
     function dpmsOn() {

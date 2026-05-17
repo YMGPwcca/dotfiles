@@ -21,12 +21,12 @@ ShellRoot {
     property bool screenshotActive: false
 
     // Ensure IdleService singleton loads
-    property bool _idleReady: IdleService.caffeineEnabled
+    property bool _idleReady: IdleService.dpmsEnabled
 
     // Idle Monitors
     IdleMonitor {
         timeout: IdleService.lockTimeout
-        enabled: !IdleService.caffeineEnabled && !IdleService.mediaPlaying && !IdleService.systemInhibited && !StateService.isLoading
+        enabled: !IdleService.mediaPlaying && !IdleService.systemInhibited && !StateService.isLoading
         respectInhibitors: true
 
         onIsIdleChanged: {
@@ -39,7 +39,7 @@ ShellRoot {
 
     IdleMonitor {
         timeout: IdleService.dpmsTimeout
-        enabled: !IdleService.caffeineEnabled && !IdleService.mediaPlaying && !IdleService.systemInhibited && IdleService.dpmsEnabled && !StateService.isLoading
+        enabled: !IdleService.mediaPlaying && !IdleService.systemInhibited && IdleService.dpmsEnabled && !StateService.isLoading
         respectInhibitors: true
 
         onIsIdleChanged: {

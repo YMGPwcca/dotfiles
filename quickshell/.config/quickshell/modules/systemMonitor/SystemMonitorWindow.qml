@@ -204,17 +204,6 @@ QsPopupWindow {
                     border.width: 1
                     border.color: Qt.alpha(Config.textColor, 0.09)
 
-                    Rectangle {
-                        anchors.left: parent.left
-                        anchors.right: parent.right
-                        anchors.top: parent.top
-                        anchors.leftMargin: 1
-                        anchors.rightMargin: 1
-                        anchors.topMargin: 1
-                        height: 1
-                        color: Qt.alpha(Config.textColor, 0.10)
-                    }
-
                     RowLayout {
                         anchors.fill: parent
                         anchors.leftMargin: 10
@@ -247,17 +236,6 @@ QsPopupWindow {
                     color: Qt.alpha(Config.surface0Color, 0.44)
                     border.width: 1
                     border.color: Qt.alpha(Config.textColor, 0.09)
-
-                    Rectangle {
-                        anchors.left: parent.left
-                        anchors.right: parent.right
-                        anchors.top: parent.top
-                        anchors.leftMargin: 1
-                        anchors.rightMargin: 1
-                        anchors.topMargin: 1
-                        height: 1
-                        color: Qt.alpha(Config.textColor, 0.10)
-                    }
 
                     RowLayout {
                         anchors.fill: parent

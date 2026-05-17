@@ -30,7 +30,7 @@ Scope {
             }
 
             margins {
-                top: 10
+                top: WindowManagerService.barVisibleForPopups ? Config.barHeight + 10 : 10
                 right: 0
             }
 

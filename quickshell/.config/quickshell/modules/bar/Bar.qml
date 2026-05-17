@@ -24,6 +24,8 @@ Scope {
             required property var modelData
 
             property bool enableAutoHide: Config.barAutoHide
+            readonly property string barName: modelData.name ?? String(modelData)
+            readonly property bool barShown: WindowManagerService.anyModuleOpen || !enableAutoHide || mouseSensor.hovered
 
             // NameSpace
             WlrLayershell.namespace: "qs_modules"
@@ -52,11 +54,15 @@ Scope {
             // If mouse is hovering, margin is 0 (show everything).
             // Otherwise, margin is -29 (hide, leaving 1px at the top to catch the mouse).
             margins.top: {
-                if (WindowManagerService.anyModuleOpen || !enableAutoHide || mouseSensor.hovered)
+                if (barShown)
                     return 0;
 
                 return (-1 * (height - 1));
             }
+
+            Component.onCompleted: WindowManagerService.setBarShown(barName, barShown)
+            Component.onDestruction: WindowManagerService.setBarShown(barName, false)
+            onBarShownChanged: WindowManagerService.setBarShown(barName, barShown)
 
             // Smooth window movement animation
             Behavior on margins.top {

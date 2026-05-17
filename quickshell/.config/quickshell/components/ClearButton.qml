@@ -10,6 +10,8 @@ Rectangle {
     required property string icon
     property string text: ""
     property color baseColor: Config.errorColor
+    property color borderColor: Qt.alpha(Config.surface2Color, 0.5)
+    property color hoverBorderColor: baseColor
 
     // --- Signals ---
     signal clicked
@@ -23,7 +25,7 @@ Rectangle {
     color: mouseArea.containsMouse ? Qt.alpha(baseColor, 0.15) : "transparent"
 
     border.width: 1
-    border.color: mouseArea.containsMouse ? baseColor : Qt.alpha(Config.surface2Color, 0.5)
+    border.color: mouseArea.containsMouse ? hoverBorderColor : borderColor
 
     // --- Animations ---
     Behavior on color {

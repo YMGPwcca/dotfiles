@@ -97,6 +97,7 @@ QsPopupWindow {
                 visible: NotificationService.count > 0
                 icon: "󰆴"
                 text: "Clear"
+                borderColor: Config.errorColor
 
                 onClicked: NotificationService.clearAll()
             }
