@@ -16,6 +16,7 @@ CORE_PACKAGES=(
     "hyprshot"        # Screenshot tool for Hyprland
     "hyprsunset"      # Blue light filter for Hyprland
     "hyprpolkitagent" # Polkit agent for Hyprland
+    "hyprland-plugins" # Official Hyprland plugins (hyprbars, etc.)
 
     # Display & Wallpaper
     "awww"         # Wallpaper daemon for Wayland

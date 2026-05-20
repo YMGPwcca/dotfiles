@@ -185,6 +185,14 @@ PanelWindow {
                                 action: "Fullscreen"
                             },
                             {
+                                keys: "Super + M",
+                                action: "Minimize window"
+                            },
+                            {
+                                keys: "Super + Shift + M",
+                                action: "Show/hide minimized workspace"
+                            },
+                            {
                                 keys: "Super + Shift + Space",
                                 action: "Toggle floating"
                             },

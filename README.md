@@ -149,6 +149,8 @@ pwcca state --help
 | ------------------------- | ------------------------------- |
 | `Super + W`               | Close focused window            |
 | `Super + F`               | Fullscreen                      |
+| `Super + M`               | Minimize (send to special workspace) |
+| `Super + Shift + M`       | Toggle minimized workspace      |
 | `Super + Shift + Space`   | Toggle floating / tiled         |
 | `Super + Tab`             | Next window                     |
 | `Alt + Tab`               | Next window                     |
@@ -158,6 +160,10 @@ pwcca state --help
 | `Super + Alt + H J K L`   | Resize window                   |
 | `Super + Left Click`      | Drag window                     |
 | `Super + Right Click`     | Resize window                   |
+
+Desktop-like titlebar controls are enabled on startup when `hyprland-plugins`
+provides `hyprbars` on your system. The setup configures titlebar buttons for:
+close, maximize/fullscreen, and minimize (to `special:minimized`).
 
 ### Workspaces
 

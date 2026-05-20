@@ -13,4 +13,5 @@ hl.on("hyprland.start", function()
     hl.exec_cmd("wl-paste --type image --watch cliphist store")
 
     hl.exec_cmd(home .. "/.local/scripts/Workspace-Manager/workspace-manager.sh --auto-update")
+    hl.exec_cmd("sleep 2 && " .. home .. "/.local/scripts/Hyprland/desktop-like-controls.sh")
 end)
