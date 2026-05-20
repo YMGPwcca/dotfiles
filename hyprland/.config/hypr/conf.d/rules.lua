@@ -1,7 +1,7 @@
 hl.window_rule({
-    name = "suppress-maximize-events",
+    name = "desktop-floating-default",
     match = { class = ".*" },
-    suppress_event = "maximize",
+    float = true,
 })
 
 hl.window_rule({

@@ -56,9 +56,10 @@ bind(mod .. " + SHIFT + C", exec("uwsm-app -- code"))
 
 bind(mod .. " + W", hl.dsp.window.close())
 bind(mod .. " + SHIFT + Space", hl.dsp.window.float())
-bind(mod .. " + P", hl.dsp.window.pseudo())
 bind(mod .. " + F", hl.dsp.window.fullscreen())
-bind(mod .. " + Tab", hl.dsp.layout("togglesplit"))
+bind(mod .. " + Tab", exec("hyprctl dispatch cyclenext"))
+bind("ALT + Tab", exec("hyprctl dispatch cyclenext"))
+bind("ALT + SHIFT + Tab", exec("hyprctl dispatch cyclenext prev"))
 
 bind(mod .. " + V", hl.dsp.global("quickshell:clipboard_history"))
 

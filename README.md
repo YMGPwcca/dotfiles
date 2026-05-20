@@ -14,7 +14,7 @@ This repo is originally based on [lyne-dots](https://github.com/caioax/lyne-dots
 
 ## ✨ Features
 
-- 🪟 **Hyprland** - Tiling Wayland compositor with modular configuration
+- 🪟 **Hyprland** - Floating-first Wayland compositor with desktop-like workflow
 - 🖥️ **QuickShell** - Custom QML-based status bar, launcher, notifications, quick settings, and power menu
 - 🎨 **Tokyo Night** - One fixed dark theme shared by QuickShell, Kitty, Neovim, Hyprland, GTK, and Qt
 - 🖼️ **Wallpaper Picker** - Built-in wallpaper manager with search and favorites
@@ -149,9 +149,10 @@ pwcca state --help
 | ------------------------- | ------------------------------- |
 | `Super + W`               | Close focused window            |
 | `Super + F`               | Fullscreen                      |
-| `Super + Shift + Space`   | Toggle floating                 |
-| `Super + Tab`             | Toggle split                    |
-| `Super + P`               | Pseudo tile                     |
+| `Super + Shift + Space`   | Toggle floating / tiled         |
+| `Super + Tab`             | Next window                     |
+| `Alt + Tab`               | Next window                     |
+| `Alt + Shift + Tab`       | Previous window                 |
 | `Super + H J K L`         | Move focus (left/down/up/right) |
 | `Super + Shift + H J K L` | Move window                     |
 | `Super + Alt + H J K L`   | Resize window                   |

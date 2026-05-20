@@ -1,15 +1,15 @@
 hl.config({
     general = {
-        gaps_in = 2,
-        gaps_out = 2,
+        gaps_in = 0,
+        gaps_out = 0,
         border_size = 1,
         col = {
             active_border = "rgba(7aa2f7ff)",
             inactive_border = "rgba(595959aa)",
         },
-        resize_on_border = false,
+        resize_on_border = true,
         allow_tearing = false,
-        layout = "dwindle",
+        layout = "master",
     },
 
     render = {
@@ -19,8 +19,8 @@ hl.config({
     decoration = {
         rounding = 7,
         rounding_power = 20,
-        active_opacity = 0.9,
-        inactive_opacity = 0.7,
+        active_opacity = 1.0,
+        inactive_opacity = 1.0,
         fullscreen_opacity = 1.0,
         shadow = {
             enabled = true,
