@@ -41,14 +41,14 @@ Singleton {
     // ========================================================================
     // GEOMETRY & LAYOUT
     // ========================================================================
-    readonly property int barHeight: getState("bar.height", 32)
+    readonly property int barHeight: getState("bar.height", 36)
     readonly property bool barAutoHide: getState("bar.autoHide", true)
 
-    readonly property int radiusSmall: getState("geometry.radiusSmall", 5)
-    readonly property int radius: getState("geometry.radius", 10)
-    readonly property int radiusLarge: getState("geometry.radiusLarge", 15)
-    readonly property int spacing: getState("geometry.spacing", 8)
-    readonly property int padding: getState("geometry.padding", 6)
+    readonly property int radiusSmall: getState("geometry.radiusSmall", 6)
+    readonly property int radius: getState("geometry.radius", 12)
+    readonly property int radiusLarge: getState("geometry.radiusLarge", 20)
+    readonly property int spacing: getState("geometry.spacing", 10)
+    readonly property int padding: getState("geometry.padding", 8)
 
     // ========================================================================
     // TYPOGRAPHY
@@ -78,7 +78,7 @@ Singleton {
     // ========================================================================
     // NOTIFICATIONS
     // ========================================================================
-    readonly property int notifWidth: getState("notifications.width", 350)
+    readonly property int notifWidth: getState("notifications.width", 380)
     readonly property int notifImageSize: getState("notifications.imageSize", 40)
     readonly property int notifTimeout: getState("notifications.timeout", 5000)
     readonly property int notifSpacing: getState("notifications.spacing", 10)

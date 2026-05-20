@@ -13,10 +13,18 @@ Rectangle {
     signal rightClicked
 
     implicitWidth: (contentItem?.implicitWidth ?? 0) + (Config.padding * 2)
-    implicitHeight: Config.barHeight - 10
+    implicitHeight: Config.barHeight - 8
     radius: height / 2
 
-    color: (active || hovered) ? Config.surface1Color : Qt.alpha(Config.surface1Color, 0)
+    color: {
+        if (active)
+            return Qt.alpha(Config.accentColor, 0.22);
+        if (hovered)
+            return Qt.alpha(Config.surface2Color, 0.66);
+        return Qt.alpha(Config.surface1Color, 0.42);
+    }
+    border.width: 1
+    border.color: active ? Qt.alpha(Config.accentColor, 0.42) : Qt.alpha(Config.textColor, hovered ? 0.20 : 0.12)
 
     Behavior on color {
         ColorAnimation {

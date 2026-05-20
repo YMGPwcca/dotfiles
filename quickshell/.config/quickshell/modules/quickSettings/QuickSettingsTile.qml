@@ -23,19 +23,19 @@ Rectangle {
 
     // --- Layout ---
     Layout.fillWidth: true
-    implicitHeight: 50
-    radius: Config.radiusLarge
+    implicitHeight: 54
+    radius: Config.radiusLarge + 2
 
     // Colors and Animation
     color: {
         if (root.active)
-            return Qt.alpha(Config.accentColor, hoverArea.containsMouse ? 0.32 : 0.24);
+            return Qt.alpha(Config.accentColor, hoverArea.containsMouse ? 0.38 : 0.28);
         if (hoverArea.containsMouse || (detailsButton.containsMouse && hasDetails))
-            return Qt.alpha(Config.surface2Color, 0.50);
-        return Qt.alpha(Config.surface1Color, 0.34);
+            return Qt.alpha(Config.surface2Color, 0.62);
+        return Qt.alpha(Config.surface1Color, 0.44);
     }
     border.width: 1
-    border.color: root.active ? Qt.alpha(Config.accentColor, 0.40) : Qt.alpha(Config.textColor, hoverArea.containsMouse ? 0.16 : 0.09)
+    border.color: root.active ? Qt.alpha(Config.accentColor, 0.48) : Qt.alpha(Config.textColor, hoverArea.containsMouse ? 0.22 : 0.12)
 
     Behavior on color {
         ColorAnimation {
@@ -80,7 +80,7 @@ Rectangle {
                     id: iconButton
                     width: 36
                     height: 36
-                    radius: Config.radiusLarge
+                    radius: width / 2
                     color: root.active ? Config.accentColor : Qt.alpha(Config.surface3Color, 0.58)
                     border.width: 1
                     border.color: root.active ? Qt.alpha(Config.textReverseColor, 0.22) : Qt.alpha(Config.textColor, 0.10)

@@ -6,17 +6,17 @@ import qs.config
 Switch {
     id: root
 
-    implicitWidth: 46
-    implicitHeight: 26
+    implicitWidth: 48
+    implicitHeight: 28
 
     indicator: Rectangle {
         implicitWidth: root.implicitWidth
         implicitHeight: root.implicitHeight
         radius: Config.radiusLarge
 
-        color: root.checked ? Qt.alpha(Config.accentColor, 0.86) : Qt.alpha(Config.surface2Color, 0.46)
+        color: root.checked ? Qt.alpha(Config.accentColor, 0.92) : Qt.alpha(Config.surface2Color, 0.56)
         border.width: 1
-        border.color: root.checked ? Qt.alpha(Config.textReverseColor, 0.22) : Qt.alpha(Config.textColor, 0.10)
+        border.color: root.checked ? Qt.alpha(Config.textReverseColor, 0.30) : Qt.alpha(Config.textColor, 0.16)
 
         Behavior on color {
             ColorAnimation {

@@ -20,7 +20,7 @@ PanelWindow {
 
     signal closing
 
-    readonly property int screenMargin: 5
+    readonly property int screenMargin: 8
 
     WlrLayershell.namespace: "qs_modules"
     WlrLayershell.layer: WlrLayer.Overlay
@@ -34,9 +34,9 @@ PanelWindow {
     }
 
     margins {
-        top: Config.barHeight + 10
-        left: anchorSide === "left" ? 10 : 0
-        right: anchorSide === "right" ? 10 : 0
+        top: Config.barHeight + 12
+        left: anchorSide === "left" ? 12 : 0
+        right: anchorSide === "right" ? 12 : 0
     }
 
     implicitWidth: popupWidth + (screenMargin * 2)
@@ -106,20 +106,20 @@ PanelWindow {
         Rectangle {
             id: background
             width: root.popupWidth
-            height: Math.min(root.popupMaxHeight, root.contentImplicitHeight + 32)
+            height: Math.min(root.popupMaxHeight, root.contentImplicitHeight + 36)
             anchors.horizontalCenter: parent.horizontalCenter
             anchors.top: parent.top
-            color: Qt.alpha(Config.backgroundColor, Math.min(Config.backgroundOpacity, 0.5))
-            radius: Config.radiusLarge
+            color: Qt.alpha(Config.surface0Color, Math.max(0.72, Math.min(Config.backgroundOpacity, 0.9)))
+            radius: Config.radiusLarge + 2
             border.width: 1.0
-            border.color: Qt.alpha(Config.textColor, 0.18)
+            border.color: Qt.alpha(Config.textColor, 0.24)
             clip: true
 
             transformOrigin: root.anchorSide === "left" ? Item.TopLeft : Item.TopRight
 
             property bool showState: visible && !root.isClosing && root.isOpening
 
-            scale: showState ? 1.0 : 0.9
+            scale: showState ? 1.0 : 0.96
             opacity: showState ? 1.0 : 0.0
 
             Behavior on scale {

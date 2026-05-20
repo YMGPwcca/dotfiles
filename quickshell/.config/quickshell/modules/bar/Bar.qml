@@ -81,8 +81,15 @@ Scope {
 
             Rectangle {
                 id: barContent
-                anchors.fill: parent
-                color: Config.backgroundTransparentColor
+                anchors.horizontalCenter: parent.horizontalCenter
+                anchors.top: parent.top
+                anchors.topMargin: 2
+                width: Math.min(parent.width - (root.gapOut * 2), 980)
+                height: parent.height - 4
+                radius: height / 2
+                color: Qt.alpha(Config.surface0Color, 0.84)
+                border.width: 1
+                border.color: Qt.alpha(Config.textColor, 0.16)
 
                 // --- LEFT ---
                 RowLayout {

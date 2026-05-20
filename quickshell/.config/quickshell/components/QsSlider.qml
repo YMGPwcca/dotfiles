@@ -19,7 +19,7 @@ Item {
     signal iconClicked
 
     // Component size
-    implicitHeight: 40
+    implicitHeight: 42
     Layout.fillWidth: true
 
     Behavior on fillColor {
@@ -108,13 +108,13 @@ Item {
                     anchors.left: parent.left
 
                     width: Math.max(0, (sliderContainer.visualPos * parent.width) - sliderContainer.handleGap)
-                    height: 28
+                    height: 30
                     color: root.fillColor
 
                     topLeftRadius: Config.radius
                     bottomLeftRadius: Config.radius
-                    topRightRadius: 2
-                    bottomRightRadius: 2
+                    topRightRadius: 3
+                    bottomRightRadius: 3
 
                     Behavior on width {
                         NumberAnimation {
@@ -131,11 +131,11 @@ Item {
                     anchors.right: parent.right
 
                     width: Math.max(0, ((1 - sliderContainer.visualPos) * parent.width) - sliderContainer.handleGap)
-                    height: 28
-                    color: Qt.alpha(Config.surface2Color, 0.48)
+                    height: 30
+                    color: Qt.alpha(Config.surface2Color, 0.58)
 
-                    topLeftRadius: 2
-                    bottomLeftRadius: 2
+                    topLeftRadius: 3
+                    bottomLeftRadius: 3
                     topRightRadius: Config.radius
                     bottomRightRadius: Config.radius
 
@@ -150,7 +150,7 @@ Item {
                 // Handle
                 Rectangle {
                     id: handle
-                    width: 3.5
+                    width: 4
                     height: parent.height
                     radius: 2
                     color: root.fillColor
