@@ -16,7 +16,7 @@ This repo is originally based on [lyne-dots](https://github.com/caioax/lyne-dots
 
 - 🪟 **Hyprland** - Floating-first Wayland compositor with desktop-like workflow
 - 🖥️ **QuickShell** - Custom QML-based status bar, launcher, notifications, quick settings, and power menu
-- 🚀 **Dock/Taskbar** - Running-app taskbar integrated into the bar center with focus/minimize behavior
+- 🚀 **Dock/Taskbar** - Separate bottom dock with launcher button and running-app taskbar with focus/minimize behavior
 - 🎨 **Tokyo Night** - One fixed dark theme shared by QuickShell, Kitty, Neovim, Hyprland, GTK, and Qt
 - 🖼️ **Wallpaper Picker** - Built-in wallpaper manager with search and favorites
 - 📸 **Screenshot Tool** - Multi-monitor region/fullscreen capture with annotation overlay

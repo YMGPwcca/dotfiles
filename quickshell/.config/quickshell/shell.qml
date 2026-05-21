@@ -7,6 +7,7 @@ import Quickshell.Hyprland
 import Quickshell.Wayland
 import qs.services
 import "./modules/bar/"
+import "./modules/dock/"
 import "./modules/power/"
 import "./modules/screenshot/"
 import qs.config
@@ -78,6 +79,7 @@ ShellRoot {
 
     // Bar - always active (main component)
     Bar {}
+    Dock {}
 
     // Notifications
     Loader {
