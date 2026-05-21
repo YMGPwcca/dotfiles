@@ -109,6 +109,7 @@ Scope {
                     spacing: root.gapIn
 
                     Workspaces {}
+                    Taskbar {}
                 }
 
                 // --- RIGHT ---
