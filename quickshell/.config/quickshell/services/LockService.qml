@@ -89,6 +89,10 @@ Singleton {
         onTriggered: {
             if (root.locked) {
                 console.log("[Lock] Restarting PAM after delay");
+                root.failed = false;
+                root.failMessage = "";
+                root.pamMessage = "";
+                root.pamMessageIsError = false;
                 pam.start();
             }
         }
@@ -137,6 +141,8 @@ Singleton {
         }
         failed = false;
         failMessage = "";
+        pamMessage = "";
+        pamMessageIsError = false;
     }
 
     function restartAuth() {
@@ -151,5 +157,7 @@ Singleton {
         }
         failed = false;
         failMessage = "";
+        pamMessage = "";
+        pamMessageIsError = false;
     }
 }

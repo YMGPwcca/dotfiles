@@ -35,10 +35,12 @@ WlSessionLock {
 
         Component.onCompleted: {
             passwordInput.forceActiveFocus();
-            if (root.fingerprintAvailable)
+            if (root.fingerprintAvailable) {
                 root.authMode = "fingerprint";
-            else
+                root.fingerprintState = "scanning";
+            } else {
                 root.authMode = "password";
+            }
         }
 
         Component.onDestruction: {
@@ -423,6 +425,8 @@ WlSessionLock {
                     shakeAnim.start();
                     passwordInput.clear();
                     root.fingerprintState = "error";
+                } else if (root.authMode === "fingerprint") {
+                    root.fingerprintState = "scanning";
                 }
             }
 
