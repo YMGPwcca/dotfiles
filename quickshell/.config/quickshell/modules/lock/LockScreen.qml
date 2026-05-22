@@ -119,7 +119,9 @@ WlSessionLock {
                         root.fingerprintState = "scanning";
                         passwordInput.clear();
                         passwordInput.forceActiveFocus();
-                        LockService.restartAuth();
+                        if (LockService.failed || !LockService.pamActive) {
+                            LockService.restartAuth();
+                        }
                     }
                 }
 
@@ -214,6 +216,74 @@ WlSessionLock {
                     anchors.fill: fingerprintSvg
                     source: fingerprintSvg
                     color: fingerprintIndicator.ringColor
+                }
+
+                // Retry Button Overlay (directly on top of the fingerprint icon)
+                Rectangle {
+                    id: retryOverlay
+                    anchors.fill: parent
+                    radius: width / 2
+                    color: Qt.alpha(Config.surface0Color, 0.92)
+                    opacity: root.fingerprintState === "error" ? 1.0 : 0.0
+                    visible: opacity > 0
+                    scale: root.fingerprintState === "error" ? 1.0 : 0.8
+                    border.width: 1
+                    border.color: retryMouseArea.containsMouse ? Config.accentColor : Config.errorColor
+
+                    Behavior on opacity {
+                        NumberAnimation { duration: Config.animDuration }
+                    }
+                    Behavior on scale {
+                        NumberAnimation { duration: Config.animDuration; easing.type: Easing.OutBack }
+                    }
+                    Behavior on border.color {
+                        ColorAnimation { duration: Config.animDurationShort }
+                    }
+
+                    Column {
+                        anchors.centerIn: parent
+                        spacing: 2
+
+                        Text {
+                            anchors.horizontalCenter: parent.horizontalCenter
+                            text: "󰑐"
+                            font.family: Config.font
+                            font.pixelSize: Config.fontSizeIcon
+                            color: retryMouseArea.containsMouse ? Config.accentColor : Config.errorColor
+                            
+                            Behavior on color {
+                                ColorAnimation { duration: Config.animDurationShort }
+                            }
+                        }
+
+                        Text {
+                            anchors.horizontalCenter: parent.horizontalCenter
+                            text: "Retry"
+                            font.family: Config.font
+                            font.pixelSize: Config.fontSizeSmall
+                            font.bold: true
+                            color: retryMouseArea.containsMouse ? Config.accentColor : Config.subtextColor
+                            
+                            Behavior on color {
+                                ColorAnimation { duration: Config.animDurationShort }
+                            }
+                        }
+                    }
+
+                    MouseArea {
+                        id: retryMouseArea
+                        anchors.fill: parent
+                        hoverEnabled: true
+                        cursorShape: Qt.PointingHandCursor
+                        onClicked: {
+                            if (LockService.failed) {
+                                LockService.restartAuth();
+                            } else {
+                                root.fingerprintState = "scanning";
+                                LockService.pamMessage = "";
+                            }
+                        }
+                    }
                 }
 
                 SequentialAnimation {

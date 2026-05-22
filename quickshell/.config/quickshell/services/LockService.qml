@@ -19,6 +19,8 @@ Singleton {
     property string pamMessage: ""
     property bool pamMessageIsError: false
     property bool passwordRequested: false
+    readonly property bool pamActive: pam.active
+    property bool _isAborting: false
 
     signal authSucceeded
 
@@ -58,14 +60,22 @@ Singleton {
                 root.failed = false;
                 root.failMessage = "";
                 root.pamMessage = "";
+                root._isAborting = false;
                 root.authSucceeded();
             } else {
-                console.log("[Lock] Authentication failed:", PamResult.toString(result));
-                root.failed = true;
-                root.failMessage = "Authentication failed";
-                // Restart PAM for prompt retry if still locked
-                if (root.locked) {
-                    pamRestartTimer.start();
+                console.log("[Lock] Authentication finished with result:", PamResult.toString(result));
+                if (root._isAborting) {
+                    root._isAborting = false;
+                    if (root.locked) {
+                        pamRestartTimer.start();
+                    }
+                } else {
+                    root.failed = true;
+                    root.failMessage = "Authentication failed";
+                    // Restart PAM for prompt retry if still locked
+                    if (root.locked) {
+                        pamRestartTimer.start();
+                    }
                 }
             }
         }
@@ -74,10 +84,17 @@ Singleton {
             root.authenticating = false;
             root._pendingPassword = "";
             console.log("[Lock] PAM error:", PamError.toString(error));
-            root.failed = true;
-            root.failMessage = "Authentication error";
-            if (root.locked) {
-                pamRestartTimer.start();
+            if (root._isAborting) {
+                root._isAborting = false;
+                if (root.locked) {
+                    pamRestartTimer.start();
+                }
+            } else {
+                root.failed = true;
+                root.failMessage = "Authentication error";
+                if (root.locked) {
+                    pamRestartTimer.start();
+                }
             }
         }
     }
@@ -151,6 +168,7 @@ Singleton {
         console.log("[Lock] Manually restarting PAM authentication");
         pamRestartTimer.stop();
         if (pam.active) {
+            root._isAborting = true;
             pam.abort();
         } else {
             pam.start();
