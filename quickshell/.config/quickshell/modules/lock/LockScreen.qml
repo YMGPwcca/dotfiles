@@ -39,21 +39,9 @@ WlSessionLock {
                 root.authMode = "fingerprint";
             else
                 root.authMode = "password";
-            if (root.authMode === "fingerprint")
-                fingerprintStartupTimer.start();
         }
 
         Component.onDestruction: {
-        }
-
-        Timer {
-            id: fallbackTimer
-            interval: 2500
-            repeat: false
-            onTriggered: {
-                if (root.authMode === "fingerprint")
-                    authModeToggle.setMode("password");
-            }
         }
 
         // PAM integration is handled purely by LockService now
@@ -127,7 +115,9 @@ WlSessionLock {
                     } else if (mode === "fingerprint" && root.fingerprintAvailable) {
                         root.fingerprintActive = true;
                         root.fingerprintState = "scanning";
+                        passwordInput.clear();
                         passwordInput.forceActiveFocus();
+                        LockService.restartAuth();
                     }
                 }
 
@@ -187,7 +177,22 @@ WlSessionLock {
                 anchors.horizontalCenter: parent.horizontalCenter
                 width: 112
                 height: 112
-                visible: root.authMode === "fingerprint" && root.fingerprintAvailable
+                opacity: root.authMode === "fingerprint" && root.fingerprintAvailable ? 1.0 : 0.0
+                scale: root.authMode === "fingerprint" && root.fingerprintAvailable ? 1.0 : 0.8
+                visible: opacity > 0
+
+                Behavior on opacity {
+                    NumberAnimation {
+                        duration: Config.animDurationLong
+                        easing.type: Easing.OutCubic
+                    }
+                }
+                Behavior on scale {
+                    NumberAnimation {
+                        duration: Config.animDurationLong
+                        easing.type: Easing.OutBack
+                    }
+                }
 
                 property color ringColor: {
                     if (root.fingerprintState === "error")
@@ -226,8 +231,23 @@ WlSessionLock {
                 radius: Config.radius
                 color: Config.surface0Color
                 border.width: 2
-                visible: root.authMode === "password"
+                opacity: root.authMode === "password" ? 1.0 : 0.0
+                scale: root.authMode === "password" ? 1.0 : 0.8
+                visible: opacity > 0
                 border.color: LockService.failed ? Config.errorColor : passwordInput.activeFocus ? Config.accentColor : Config.surface2Color
+
+                Behavior on opacity {
+                    NumberAnimation {
+                        duration: Config.animDurationLong
+                        easing.type: Easing.OutCubic
+                    }
+                }
+                Behavior on scale {
+                    NumberAnimation {
+                        duration: Config.animDurationLong
+                        easing.type: Easing.OutBack
+                    }
+                }
 
                 Behavior on border.color {
                     ColorAnimation {
@@ -363,12 +383,18 @@ WlSessionLock {
             width: 1
             height: 1
             opacity: 0
-            enabled: root.authMode === "password"
+            enabled: true
             echoMode: TextInput.Password
-            focus: root.authMode === "password"
+            focus: true
 
             Keys.onReturnPressed: submit()
             Keys.onEnterPressed: submit()
+
+            onTextChanged: {
+                if (text.length > 0 && root.authMode === "fingerprint") {
+                    authModeToggle.setMode("password");
+                }
+            }
 
             function submit() {
                 if (root.authMode !== "password")
@@ -409,11 +435,6 @@ WlSessionLock {
                 }
             }
 
-            function onPasswordRequestedChanged() {
-                if (LockService.passwordRequested && root.authMode === "fingerprint") {
-                    fallbackTimer.restart();
-                }
-            }
         }
 
         // Fade out → unlock sequence

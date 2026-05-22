@@ -65,7 +65,7 @@ Singleton {
                 root.failMessage = "Authentication failed";
                 // Restart PAM for prompt retry if still locked
                 if (root.locked) {
-                    pam.start();
+                    pamRestartTimer.start();
                 }
             }
         }
@@ -77,6 +77,18 @@ Singleton {
             root.failed = true;
             root.failMessage = "Authentication error";
             if (root.locked) {
+                pamRestartTimer.start();
+            }
+        }
+    }
+
+    Timer {
+        id: pamRestartTimer
+        interval: 1000 // 1s delay to let fprintd release the device cleanly
+        repeat: false
+        onTriggered: {
+            if (root.locked) {
+                console.log("[Lock] Restarting PAM after delay");
                 pam.start();
             }
         }
@@ -95,6 +107,7 @@ Singleton {
             pamMessage = "";
             authenticating = false;
             _pendingPassword = "";
+            pamRestartTimer.stop();
             pam.start();
         }
     }
@@ -106,6 +119,7 @@ Singleton {
             // because that triggers signals on the LockScreen which is being
             // destroyed (causes "invalid context" warning). State is reset in lock().
             locked = false;
+            pamRestartTimer.stop();
         }
     }
 
@@ -114,10 +128,25 @@ Singleton {
             return;
         console.log("[Lock] Submitting password to PAM");
         _pendingPassword = password;
+        pamRestartTimer.stop();
         if (pam.responseRequired) {
             pam.respond(password);
             _pendingPassword = "";
         } else if (!pam.active) {
+            pam.start();
+        }
+        failed = false;
+        failMessage = "";
+    }
+
+    function restartAuth() {
+        if (!locked)
+            return;
+        console.log("[Lock] Manually restarting PAM authentication");
+        pamRestartTimer.stop();
+        if (pam.active) {
+            pam.abort();
+        } else {
             pam.start();
         }
         failed = false;
