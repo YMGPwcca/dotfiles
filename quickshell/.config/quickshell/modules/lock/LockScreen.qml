@@ -224,9 +224,9 @@ WlSessionLock {
                     anchors.fill: parent
                     radius: width / 2
                     color: Qt.alpha(Config.surface0Color, 0.92)
-                    opacity: root.fingerprintState === "error" ? 1.0 : 0.0
+                    opacity: LockService.failed && root.authMode === "fingerprint" ? 1.0 : 0.0
                     visible: opacity > 0
-                    scale: root.fingerprintState === "error" ? 1.0 : 0.8
+                    scale: LockService.failed && root.authMode === "fingerprint" ? 1.0 : 0.8
                     border.width: 1
                     border.color: retryMouseArea.containsMouse ? Config.accentColor : Config.errorColor
 
