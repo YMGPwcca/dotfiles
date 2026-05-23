@@ -542,6 +542,8 @@ WlSessionLock {
                     root.locked = false;
                 }
             }
+        }
+
         // Debug Logs Sidebar
         Rectangle {
             id: debugLogsSidebar
