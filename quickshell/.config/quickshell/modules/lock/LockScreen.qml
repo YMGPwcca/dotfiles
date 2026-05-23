@@ -287,12 +287,7 @@ WlSessionLock {
                         hoverEnabled: true
                         cursorShape: Qt.PointingHandCursor
                         onClicked: {
-                            if (LockService.failed) {
-                                LockService.restartAuth();
-                            } else {
-                                root.fingerprintState = "scanning";
-                                LockService.pamMessage = "";
-                            }
+                            LockService.restartAuth();
                         }
                     }
                 }
