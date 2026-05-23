@@ -17,6 +17,16 @@ WlSessionLock {
     property int fingerprintRetryCount: 0
     property string fingerprintState: "idle"
 
+    readonly property bool showRetryButton: {
+        if (root.authMode !== "fingerprint")
+            return false;
+        if (LockService.failed)
+            return true;
+        const msg = LockService.pamMessage.toLowerCase();
+        return msg.indexOf("failed to match fingerprint") !== -1 ||
+               msg.indexOf("verification timed out") !== -1;
+    }
+
     // Set locked on creation — NOT bound to LockService.locked
     // This avoids the race condition where Loader destruction and protocol
     // unlock happen simultaneously
@@ -224,9 +234,9 @@ WlSessionLock {
                     anchors.fill: parent
                     radius: width / 2
                     color: Qt.alpha(Config.surface0Color, 0.92)
-                    opacity: LockService.failed && root.authMode === "fingerprint" ? 1.0 : 0.0
+                    opacity: root.showRetryButton ? 1.0 : 0.0
                     visible: opacity > 0
-                    scale: LockService.failed && root.authMode === "fingerprint" ? 1.0 : 0.8
+                    scale: root.showRetryButton ? 1.0 : 0.8
                     border.width: 1
                     border.color: retryMouseArea.containsMouse ? Config.accentColor : Config.errorColor
 
