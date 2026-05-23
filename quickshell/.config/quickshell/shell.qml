@@ -45,12 +45,21 @@ ShellRoot {
         onIsIdleChanged: {
             if (isIdle) {
                 console.log("[Idle] DPMS timeout, displays off");
-                IdleService.dpmsOff();
+                IdleService.lock();
+                dpmsOffAfterLockTimer.restart();
             } else {
                 console.log("[Idle] User returned, displays on");
+                dpmsOffAfterLockTimer.stop();
                 IdleService.dpmsOn();
             }
         }
+    }
+
+    Timer {
+        id: dpmsOffAfterLockTimer
+        interval: 250
+        repeat: false
+        onTriggered: IdleService.dpmsOff()
     }
 
     // =========================================================================

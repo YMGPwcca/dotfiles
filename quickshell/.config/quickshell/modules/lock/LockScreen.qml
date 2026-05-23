@@ -13,14 +13,44 @@ WlSessionLock {
     property string authMode: "fingerprint"
     property bool fingerprintActive: false
     property bool fingerprintAvailable: true
-    property string fingerprintHint: "Touch fingerprint sensor or enter password"
     property int fingerprintRetryCount: 0
     property string fingerprintState: "idle"
     property bool showDebugLogs: false
 
+    readonly property bool fingerprintTimedOut: LockService.pamMessage.toLowerCase().indexOf("verification timed out") !== -1
+    readonly property color fingerprintStatusColor: {
+        if (root.fingerprintTimedOut)
+            return Config.warningColor;
+        if (root.fingerprintState === "error")
+            return Config.errorColor;
+        return Config.accentColor;
+    }
+
+    readonly property string fingerprintHint: {
+        if (!root.fingerprintAvailable)
+            return "Fingerprint unlock is unavailable";
+        if (LockService.passwordRequested)
+            return "Fingerprint scan ended. Press retry to scan again or use password.";
+        const msg = LockService.pamMessage.trim();
+        const lowerMsg = msg.toLowerCase();
+        if (lowerMsg.indexOf("failed to match fingerprint") !== -1)
+            return "Fingerprint not recognized. Press retry to scan again.";
+        if (lowerMsg.indexOf("verification timed out") !== -1)
+            return "Fingerprint scan timed out. Press retry to scan again.";
+        if (msg !== "")
+            return msg;
+        if (!LockService.pamActive)
+            return "Starting fingerprint authentication...";
+        if (root.fingerprintState === "error")
+            return "Fingerprint not recognized. Press retry to scan again.";
+        return "Waiting for fingerprint scan...";
+    }
+
     readonly property bool showRetryButton: {
         if (root.authMode !== "fingerprint")
             return false;
+        if (LockService.passwordRequested)
+            return true;
         if (LockService.failed)
             return true;
         const msg = LockService.pamMessage.toLowerCase();
@@ -124,6 +154,7 @@ WlSessionLock {
                     if (mode === "password") {
                         root.fingerprintActive = false;
                         root.fingerprintState = "idle";
+                        LockService.stopAuth();
                         passwordInput.forceActiveFocus();
                     } else if (mode === "fingerprint" && root.fingerprintAvailable) {
                         root.fingerprintActive = true;
@@ -188,32 +219,43 @@ WlSessionLock {
             }
 
             Item {
-                id: fingerprintIndicator
+                id: authVisualSlot
                 anchors.horizontalCenter: parent.horizontalCenter
-                width: 112
+                width: 280
                 height: 112
-                opacity: root.authMode === "fingerprint" && root.fingerprintAvailable ? 1.0 : 0.0
-                scale: root.authMode === "fingerprint" && root.fingerprintAvailable ? 1.0 : 0.8
-                visible: opacity > 0
 
-                Behavior on opacity {
-                    NumberAnimation {
-                        duration: Config.animDurationLong
-                        easing.type: Easing.OutCubic
-                    }
-                }
-                Behavior on scale {
-                    NumberAnimation {
-                        duration: Config.animDurationLong
-                        easing.type: Easing.OutBack
-                    }
-                }
+                Item {
+                    id: fingerprintIndicator
+                    width: 112
+                    height: 112
+                    x: (authVisualSlot.width - width) / 2
+                    y: root.authMode === "fingerprint" && root.fingerprintAvailable ? 0 : 18
+                    opacity: root.authMode === "fingerprint" && root.fingerprintAvailable ? 1.0 : 0.0
+                    scale: root.authMode === "fingerprint" && root.fingerprintAvailable ? 1.0 : 0.88
+                    visible: root.fingerprintAvailable
 
-                property color ringColor: {
-                    if (root.fingerprintState === "error")
-                        return Config.errorColor;
-                    return Config.accentColor;
-                }
+                    Behavior on y {
+                        NumberAnimation {
+                            duration: Config.animDurationLong
+                            easing.type: Easing.OutCubic
+                        }
+                    }
+                    Behavior on opacity {
+                        NumberAnimation {
+                            duration: Config.animDurationLong
+                            easing.type: Easing.OutCubic
+                        }
+                    }
+                    Behavior on scale {
+                        NumberAnimation {
+                            duration: Config.animDurationLong
+                            easing.type: Easing.OutBack
+                        }
+                    }
+
+                    property color ringColor: {
+                        return root.fingerprintStatusColor;
+                    }
 
                 Image {
                     id: fingerprintSvg
@@ -239,7 +281,7 @@ WlSessionLock {
                     visible: opacity > 0
                     scale: root.showRetryButton ? 1.0 : 0.8
                     border.width: 1
-                    border.color: retryMouseArea.containsMouse ? Config.accentColor : Config.errorColor
+                    border.color: retryMouseArea.containsMouse ? Qt.lighter(root.fingerprintStatusColor, 1.1) : root.fingerprintStatusColor
 
                     Behavior on opacity {
                         NumberAnimation { duration: Config.animDuration }
@@ -260,7 +302,7 @@ WlSessionLock {
                             text: "󰑐"
                             font.family: Config.font
                             font.pixelSize: Config.fontSizeIcon
-                            color: retryMouseArea.containsMouse ? Config.accentColor : Config.errorColor
+                            color: retryMouseArea.containsMouse ? Qt.lighter(root.fingerprintStatusColor, 1.1) : root.fingerprintStatusColor
                             
                             Behavior on color {
                                 ColorAnimation { duration: Config.animDurationShort }
@@ -273,7 +315,7 @@ WlSessionLock {
                             font.family: Config.font
                             font.pixelSize: Config.fontSizeSmall
                             font.bold: true
-                            color: retryMouseArea.containsMouse ? Config.accentColor : Config.subtextColor
+                            color: retryMouseArea.containsMouse ? Qt.lighter(root.fingerprintStatusColor, 1.1) : root.fingerprintStatusColor
                             
                             Behavior on color {
                                 ColorAnimation { duration: Config.animDurationShort }
@@ -287,6 +329,10 @@ WlSessionLock {
                         hoverEnabled: true
                         cursorShape: Qt.PointingHandCursor
                         onClicked: {
+                            root.authMode = "fingerprint";
+                            root.fingerprintState = "scanning";
+                            passwordInput.clear();
+                            passwordInput.forceActiveFocus();
                             LockService.restartAuth();
                         }
                     }
@@ -300,20 +346,28 @@ WlSessionLock {
                 }
             }
 
-            // Password field
-            Rectangle {
-                id: passwordField
-                anchors.horizontalCenter: parent.horizontalCenter
-                width: 280
-                height: 44
+                // Password field
+                Rectangle {
+                    id: passwordField
+                    width: 280
+                    height: 44
+                    x: 0
+                    y: root.authMode === "password" ? 0 : 18
                 radius: Config.radius
                 color: Config.surface0Color
                 border.width: 2
                 opacity: root.authMode === "password" ? 1.0 : 0.0
-                scale: root.authMode === "password" ? 1.0 : 0.8
+                scale: root.authMode === "password" ? 1.0 : 0.9
                 visible: opacity > 0
+                clip: true
                 border.color: LockService.failed ? Config.errorColor : passwordInput.activeFocus ? Config.accentColor : Config.surface2Color
 
+                Behavior on y {
+                    NumberAnimation {
+                        duration: Config.animDurationLong
+                        easing.type: Easing.OutCubic
+                    }
+                }
                 Behavior on opacity {
                     NumberAnimation {
                         duration: Config.animDurationLong
@@ -326,7 +380,6 @@ WlSessionLock {
                         easing.type: Easing.OutBack
                     }
                 }
-
                 Behavior on border.color {
                     ColorAnimation {
                         duration: Config.animDurationShort
@@ -421,34 +474,60 @@ WlSessionLock {
                     }
                 }
             }
-
-            // Error text
-            Text {
-                anchors.horizontalCenter: parent.horizontalCenter
-                visible: LockService.failed && root.authMode === "password"
-                text: LockService.failMessage
-                color: Config.errorColor
-                font.family: Config.font
-                font.pixelSize: Config.fontSizeSmall
             }
 
-            Text {
+            Item {
                 anchors.horizontalCenter: parent.horizontalCenter
-                visible: root.authMode === "fingerprint" && !LockService.failed && root.fingerprintAvailable
-                text: LockService.pamMessage !== "" ? LockService.pamMessage : root.fingerprintHint
-                color: LockService.pamMessageIsError ? Config.errorColor : Config.subtextColor
-                font.family: Config.font
-                font.pixelSize: Config.fontSizeSmall
+                width: 360
+                height: Config.fontSizeSmall + 6
+
+                // Error text
+                Text {
+                    anchors.centerIn: parent
+                    opacity: LockService.failed && root.authMode === "password" ? 1.0 : 0.0
+                    visible: opacity > 0
+                    text: LockService.failMessage
+                    color: Config.errorColor
+                    font.family: Config.font
+                    font.pixelSize: Config.fontSizeSmall
+
+                    Behavior on opacity {
+                        NumberAnimation {
+                            duration: Config.animDuration
+                            easing.type: Easing.OutCubic
+                        }
+                    }
+                }
+
+                Text {
+                    anchors.centerIn: parent
+                    opacity: root.authMode === "fingerprint" && !LockService.failed && root.fingerprintAvailable ? 1.0 : 0.0
+                    visible: opacity > 0
+                    text: root.fingerprintHint
+                    color: root.fingerprintTimedOut ? Config.warningColor : root.fingerprintState === "error" || LockService.pamMessageIsError ? Config.errorColor : Config.subtextColor
+                    font.family: Config.font
+                    font.pixelSize: Config.fontSizeSmall
+
+                    Behavior on opacity {
+                        NumberAnimation {
+                            duration: Config.animDuration
+                            easing.type: Easing.OutCubic
+                        }
+                    }
+                }
             }
 
-            // Username
-            Text {
-                anchors.horizontalCenter: parent.horizontalCenter
-                text: Quickshell.env("USER")
-                color: Config.subtextColor
-                font.family: Config.font
-                font.pixelSize: Config.fontSizeNormal
-            }
+        }
+
+        // Username
+        Text {
+            anchors.horizontalCenter: parent.horizontalCenter
+            anchors.bottom: parent.bottom
+            anchors.bottomMargin: 42
+            text: Quickshell.env("USER")
+            color: Config.subtextColor
+            font.family: Config.font
+            font.pixelSize: Config.fontSizeNormal
         }
 
 
@@ -465,8 +544,16 @@ WlSessionLock {
             echoMode: TextInput.Password
             focus: true
 
-            Keys.onReturnPressed: submit()
-            Keys.onEnterPressed: submit()
+            Keys.onReturnPressed: event => {
+                if (!event.isAutoRepeat)
+                    submit();
+                event.accepted = true;
+            }
+            Keys.onEnterPressed: event => {
+                if (!event.isAutoRepeat)
+                    submit();
+                event.accepted = true;
+            }
 
             onTextChanged: {
                 if (text.length > 0 && root.authMode === "fingerprint") {
@@ -510,6 +597,8 @@ WlSessionLock {
                 const msg = LockService.pamMessage.toLowerCase();
                 if (msg.indexOf("failed to match fingerprint") !== -1) {
                     root.fingerprintState = "error";
+                } else if (msg.indexOf("verification timed out") !== -1) {
+                    root.fingerprintState = "timeout";
                 } else if (msg.indexOf("place your finger") !== -1 || msg.indexOf("swipe") !== -1) {
                     root.fingerprintState = "scanning";
                 }
@@ -615,6 +704,8 @@ WlSessionLock {
                 spacing: 6
 
                 delegate: Text {
+                    required property string modelData
+
                     width: logsListView.width - 24
                     text: modelData
                     textFormat: Text.RichText
