@@ -21,6 +21,25 @@ Singleton {
     property bool passwordRequested: false
     readonly property bool pamActive: pam.active
     property bool _isAborting: false
+    property var debugLogs: []
+    signal debugLogAdded(string msg)
+
+    function logDebug(msg, colorName) {
+        const time = new Date().toLocaleTimeString();
+        let formatted = `[${time}] ${msg}`;
+        if (colorName) {
+            formatted = `<font color="${colorName}">${formatted}</font>`;
+        } else {
+            formatted = `<font color="#c0caf5">${formatted}</font>`;
+        }
+        console.log(`[Lock Debug] ${msg}`);
+        const newLogs = debugLogs.concat([formatted]);
+        if (newLogs.length > 100) {
+            newLogs.shift();
+        }
+        debugLogs = newLogs;
+        debugLogAdded(formatted);
+    }
 
     signal authSucceeded
 
@@ -37,7 +56,9 @@ Singleton {
 
         onResponseRequiredChanged: {
             root.passwordRequested = pam.responseRequired;
+            root.logDebug(`Response required: ${pam.responseRequired}`, "#7aa2f7");
             if (pam.responseRequired && root._pendingPassword !== "") {
+                root.logDebug("Responding to prompt with pending password", "#7aa2f7");
                 pam.respond(root._pendingPassword);
                 root._pendingPassword = "";
             }
@@ -45,6 +66,7 @@ Singleton {
 
         onPamMessage: {
             const cleanMsg = pam.message.trim();
+            root.logDebug(`PAM Message: "${cleanMsg}" (isError: ${pam.messageIsError})`, pam.messageIsError ? "#f7768e" : "#e0af68");
             if (cleanMsg !== "" && !pam.responseRequired) {
                 root.pamMessage = cleanMsg;
                 root.pamMessageIsError = pam.messageIsError;
@@ -54,6 +76,7 @@ Singleton {
         onCompleted: result => {
             root.authenticating = false;
             root._pendingPassword = "";
+            root.logDebug(`PAM completed with result: ${PamResult.toString(result)}`, result === PamResult.Success ? "#9ece6a" : "#f7768e");
 
             if (result === PamResult.Success) {
                 console.log("[Lock] Authentication successful");
@@ -65,6 +88,7 @@ Singleton {
             } else {
                 console.log("[Lock] Authentication finished with result:", PamResult.toString(result));
                 if (root._isAborting) {
+                    root.logDebug("Abort flag was active, trigger restart timer without failed state", "#7aa2f7");
                     root._isAborting = false;
                     if (root.locked) {
                         pamRestartTimer.start();
@@ -83,6 +107,7 @@ Singleton {
         onError: error => {
             root.authenticating = false;
             root._pendingPassword = "";
+            root.logDebug(`PAM error: ${PamError.toString(error)}`, "#f7768e");
             console.log("[Lock] PAM error:", PamError.toString(error));
             if (root._isAborting) {
                 root._isAborting = false;
@@ -105,6 +130,7 @@ Singleton {
         repeat: false
         onTriggered: {
             if (root.locked) {
+                root.logDebug("pamRestartTimer fired, restarting PAM", "#7aa2f7");
                 console.log("[Lock] Restarting PAM after delay");
                 root.failed = false;
                 root.failMessage = "";
@@ -121,6 +147,7 @@ Singleton {
 
     function lock() {
         if (!locked) {
+            root.logDebug("lock() screen initiated", "#7aa2f7");
             console.log("[Lock] Locking screen");
             locked = true;
             failed = false;
@@ -135,6 +162,7 @@ Singleton {
 
     function unlock() {
         if (locked) {
+            root.logDebug("unlock() screen initiated", "#9ece6a");
             console.log("[Lock] Unlocking screen");
             // Only set locked = false here. Do NOT reset failed/failMessage/etc
             // because that triggers signals on the LockScreen which is being
@@ -147,6 +175,7 @@ Singleton {
     function tryUnlock(password: string) {
         if (!locked)
             return;
+        root.logDebug(`tryUnlock() password submit, pam.active: ${pam.active}, responseRequired: ${pam.responseRequired}`, "#7aa2f7");
         console.log("[Lock] Submitting password to PAM");
         _pendingPassword = password;
         pamRestartTimer.stop();
@@ -165,6 +194,7 @@ Singleton {
     function restartAuth() {
         if (!locked)
             return;
+        root.logDebug(`restartAuth() manual restart, pam.active: ${pam.active}`, "#7aa2f7");
         console.log("[Lock] Manually restarting PAM authentication");
         pamRestartTimer.stop();
         if (pam.active) {

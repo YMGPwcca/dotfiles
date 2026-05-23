@@ -16,6 +16,7 @@ WlSessionLock {
     property string fingerprintHint: "Touch fingerprint sensor or enter password"
     property int fingerprintRetryCount: 0
     property string fingerprintState: "idle"
+    property bool showDebugLogs: false
 
     readonly property bool showRetryButton: {
         if (root.authMode !== "fingerprint")
@@ -540,6 +541,130 @@ WlSessionLock {
                     lockServiceConn.enabled = false;
                     root.locked = false;
                 }
+            }
+        // Debug Logs Sidebar
+        Rectangle {
+            id: debugLogsSidebar
+            anchors.top: parent.top
+            anchors.bottom: parent.bottom
+            width: 400
+            color: Qt.alpha(Config.surface0Color, 0.95)
+            border.width: 1
+            border.color: Config.surface2Color
+            z: 9998 // Just below toggle button
+            x: root.showDebugLogs ? 0 : -width
+
+            Behavior on x {
+                NumberAnimation { duration: Config.animDurationLong; easing.type: Easing.OutQuint }
+            }
+
+            // Header layout
+            Item {
+                id: sidebarHeader
+                anchors.top: parent.top
+                anchors.left: parent.left
+                anchors.right: parent.right
+                height: 48
+                anchors.margins: 12
+
+                Text {
+                    anchors.left: parent.left
+                    anchors.verticalCenter: parent.verticalCenter
+                    text: "PAM Debug Logs"
+                    color: Config.accentColor
+                    font.family: Config.font
+                    font.pixelSize: Config.fontSizeLarge
+                    font.bold: true
+                }
+
+                // Clear button inside header
+                Rectangle {
+                    anchors.right: parent.right
+                    anchors.verticalCenter: parent.verticalCenter
+                    width: 60
+                    height: 28
+                    radius: Config.radiusSmall
+                    color: clearMouseArea.containsMouse ? Config.surface2Color : Config.surface1Color
+                    border.width: 1
+                    border.color: Config.surface3Color
+
+                    Text {
+                        anchors.centerIn: parent
+                        text: "Clear"
+                        color: Config.textColor
+                        font.family: Config.font
+                        font.pixelSize: Config.fontSizeSmall
+                    }
+
+                    MouseArea {
+                        id: clearMouseArea
+                        anchors.fill: parent
+                        hoverEnabled: true
+                        onClicked: LockService.debugLogs = []
+                    }
+                }
+            }
+
+            // ListView for logs
+            ListView {
+                id: logsListView
+                anchors.top: sidebarHeader.bottom
+                anchors.bottom: parent.bottom
+                anchors.left: parent.left
+                anchors.right: parent.right
+                anchors.margins: 12
+                clip: true
+                model: LockService.debugLogs
+                spacing: 6
+
+                delegate: Text {
+                    width: logsListView.width - 24
+                    text: modelData
+                    textFormat: Text.RichText
+                    font.family: Config.font
+                    font.pixelSize: Config.fontSizeSmall
+                    wrapMode: Text.WrapAnywhere
+                }
+
+                // Auto-scroll to bottom on new items
+                onCountChanged: {
+                    Qt.callLater(() => logsListView.positionViewAtEnd());
+                }
+            }
+        }
+
+        // Log Toggle Button
+        Rectangle {
+            id: toggleLogsButton
+            anchors.bottom: parent.bottom
+            x: root.showDebugLogs ? debugLogsSidebar.width + 16 : 16
+            width: 85
+            height: 32
+            radius: Config.radiusSmall
+            color: toggleLogsMouseArea.containsMouse ? Config.surface2Color : Config.surface1Color
+            border.width: 1
+            border.color: Config.surface3Color
+            z: 9999 // Ensure it is on top of everything
+
+            Behavior on x {
+                NumberAnimation { duration: Config.animDurationLong; easing.type: Easing.OutQuint }
+            }
+
+            Text {
+                anchors.centerIn: parent
+                text: root.showDebugLogs ? "Hide Logs" : "Show Logs"
+                color: Config.textColor
+                font.family: Config.font
+                font.pixelSize: Config.fontSizeSmall
+                font.bold: true
+            }
+
+            MouseArea {
+                id: toggleLogsMouseArea
+                anchors.fill: parent
+                hoverEnabled: true
+                cursorShape: Qt.PointingHandCursor
+                onClicked: root.showDebugLogs = !root.showDebugLogs
             }
         }
     }
